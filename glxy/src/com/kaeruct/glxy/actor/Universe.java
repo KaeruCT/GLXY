@@ -290,6 +290,10 @@ public class Universe extends Actor {
 		);
 	}
 	
+	public void clearParticles() {
+		particles.clear();
+	}
+	
 	public void dispose() {
 		sr.dispose();
 	}

@@ -39,7 +39,6 @@ public class GameScreen extends Screen {
 		t1.pad(padY, padX, padY, padX);
 		
 		final TextButton t2 = new TextButton("-", skin);
-		
 		t2.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -49,6 +48,16 @@ public class GameScreen extends Screen {
 		    }
 		});
 		t2.pad(padY, padX, padY, padX);
+		
+		final TextButton t3 = new TextButton("Reset", skin);
+		t3.addListener(new ClickListener() {
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				universe.clearParticles();
+				return false;
+			}
+		});
+		t3.pad(padY, padX, padY, padX);
 		
 		final CheckBox b1 = new CheckBox("Pan", skin);
 		b1.addListener(new ChangeListener() {
@@ -60,10 +69,11 @@ public class GameScreen extends Screen {
 		b1.pad(padY, padX, padY, padX);
 		
 		// set up table layout
-		table.add(universe).expand().fill().colspan(4).row();
+		table.add(universe).expand().fill().colspan(5).row();
 		table.add(t2).pad(4);
 		table.add(t1).pad(4);
 		table.add(l1).pad(4);
+		table.add(t3).pad(4);
 		table.add(b1).align(BaseTableLayout.RIGHT).expandX().pad(4);
 		
 		// set up input
