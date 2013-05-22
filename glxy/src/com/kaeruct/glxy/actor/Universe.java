@@ -45,6 +45,13 @@ public class Universe extends Actor {
 
 		@Override
 		public boolean tap (float x, float y, int count, int button) {
+			touchPos.set(x, y, 0);
+			initPos.set(0, 0, 0);
+			camera.unproject(touchPos);
+			protoParticle.dragged = false;
+			protoParticle.vel(initPos);
+			protoParticle.position(touchPos);
+			addParticle();
 			return true;
 		}
 
