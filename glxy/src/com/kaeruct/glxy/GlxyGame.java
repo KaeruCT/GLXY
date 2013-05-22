@@ -32,6 +32,7 @@ public class GlxyGame implements ApplicationListener {
 	CameraController controller;
 	GestureDetector gestureDetector;
 	boolean addedParticle;
+	boolean panning;
 	
 	class CameraController implements GestureListener {
 		float velX, velY;
@@ -51,7 +52,7 @@ public class GlxyGame implements ApplicationListener {
 
 		@Override
 		public boolean longPress (float x, float y) {
-			Gdx.app.log("GestureDetectorTest", "long press at " + x + ", " + y);
+			panning = true;
 			return false;
 		}
 
@@ -65,7 +66,7 @@ public class GlxyGame implements ApplicationListener {
 
 		@Override
 		public boolean pan (float x, float y, float deltaX, float deltaY) {
-			if (!protoParticle.dragged) {
+			if (panning) {
 				camera.position.add(-deltaX * camera.zoom, deltaY * camera.zoom, 0);
 			}
 			
@@ -98,6 +99,7 @@ public class GlxyGame implements ApplicationListener {
 	@Override
 	public void create() {
 		addedParticle = true;
+		panning = false;
 		particles = new Array<Particle>();
 		sr = new ShapeRenderer();
 		touchPos = new Vector3();
@@ -108,7 +110,7 @@ public class GlxyGame implements ApplicationListener {
 		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
 		
 		controller = new CameraController();
-		gestureDetector = new GestureDetector(20, 0.5f, 2, 0.15f, controller);
+		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
 		Gdx.input.setInputProcessor(gestureDetector);
 	}
  
@@ -129,7 +131,11 @@ public class GlxyGame implements ApplicationListener {
 	}
 	
 	public void manageInput() {
-		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1)) { // only one finger is touching
+		if (!Gdx.input.isTouched(0)) {
+			panning = false;
+		}
+		
+		if (!panning && Gdx.input.isTouched(0) && !Gdx.input.isTouched(1)) { // only one finger is touching
 			addedParticle = false;
 			touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
 			camera.unproject(touchPos);
