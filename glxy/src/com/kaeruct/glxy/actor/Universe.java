@@ -103,7 +103,9 @@ public class Universe extends Actor {
 		
 		protoParticle = (new Particle()).radius(minRadius);
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);	
+		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
+		//camera = new OrthographicCamera(getWidth(), getHeight());
+		//camera.position.set(getWidth() / 2.0f, getHeight() / 2.0f, 0);
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
 	}
@@ -126,20 +128,24 @@ public class Universe extends Actor {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
+		camera.update();
 		batch.end();
 		sr.setProjectionMatrix(batch.getProjectionMatrix());
         sr.setTransformMatrix(batch.getTransformMatrix());
-        //sr.translate(getX(), getY(), 0);
 		sr.begin(ShapeType.FilledRectangle);
 		sr.setColor(0.1f, 0.1f, 0.2f, 1);
 		sr.filledRect(getX(), getY(), getWidth(), getHeight());
 		sr.end();
-	    camera.update();
 	    
 	    if (!panning && protoParticle.dragged) {
+	    	float tx = (getX() + getWidth()) / 2 - camera.position.x,
+	    		  ty = (getY() + getHeight()) / 2 - camera.position.y;
+	    	
 	    	sr.begin(ShapeType.Line);
+	    	sr.translate(tx, ty, 0);
 		    sr.setColor(Color.LIGHT_GRAY);
 			sr.line(initPos.x, initPos.y, touchPos.x, touchPos.y);
+			sr.translate(-tx, -ty, 0);
 			sr.end();
 	    }
 	    renderParticles();
