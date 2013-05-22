@@ -155,12 +155,15 @@ public class GlxyGame implements ApplicationListener {
 	}
 	
 	private void updateParticles() {
-		for (Particle p: particles) {
+		Iterator<Particle> it;
+		for (int i = 0; i < particles.size; i++) {
+			Particle p = particles.get(i);
 			if (p.dead) continue;
+			
+			for (int j = 0; j < particles.size; j++) {
+				Particle p2 = particles.get(j);
+				if (p2.dead || i == j) continue;
 
-			for (Particle p2 : particles) {
-				if (p2.dead || p == p2) continue;
-				
 				float dx = p2.x - p.x;
 	            float dy = p2.y - p.y;
 	            float d = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
@@ -188,7 +191,7 @@ public class GlxyGame implements ApplicationListener {
 			}
 	    }
 		
-		Iterator<Particle> it = particles.iterator();
+		it = particles.iterator();
 		while (it.hasNext()) {
 			Particle p = it.next();
 			if (!p.update()) {
