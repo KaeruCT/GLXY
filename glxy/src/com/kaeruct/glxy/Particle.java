@@ -5,11 +5,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.kaeruct.glxy.Particle;
 
 public class Particle extends Circle {
-	double dx;
-	double dy;
-	float mass;
-	boolean dead;
-	boolean dragged;
+	public double dx;
+	public double dy;
+	public float mass;
+	public boolean dead;
+	public boolean dragged;
 	
 	public Particle () {
 		dx = 0;
