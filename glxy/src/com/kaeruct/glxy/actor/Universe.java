@@ -21,7 +21,7 @@ public class Universe extends Actor {
 	ShapeRenderer sr;
 	Particle protoParticle;
 	Array<Particle> particles;
-	Vector3 initPos, touchPos;
+	Vector3 initPos, touchPos, cinitPos, ctouchPos;
 	CameraController controller;
 	public GestureDetector gestureDetector;
 	boolean addedParticle;
@@ -100,12 +100,12 @@ public class Universe extends Actor {
 		sr = new ShapeRenderer();
 		touchPos = new Vector3();
 		initPos = new Vector3();
+		ctouchPos = new Vector3();
+		cinitPos = new Vector3();
 		
 		protoParticle = (new Particle()).radius(minRadius);
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
-		//camera = new OrthographicCamera(getWidth(), getHeight());
-		//camera.position.set(getWidth() / 2.0f, getHeight() / 2.0f, 0);
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
 	}
@@ -130,25 +130,34 @@ public class Universe extends Actor {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		camera.update();
 		batch.end();
-		sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.setTransformMatrix(batch.getTransformMatrix());
+		// fill background
 		sr.begin(ShapeType.FilledRectangle);
 		sr.setColor(0.1f, 0.1f, 0.2f, 1);
 		sr.filledRect(getX(), getY(), getWidth(), getHeight());
 		sr.end();
-	    
+
 	    if (!panning && protoParticle.dragged) {
-	    	float tx = (getX() + getWidth()) / 2 - camera.position.x,
-	    		  ty = (getY() + getHeight()) / 2 - camera.position.y;
-	    	
+	    	// draw "slingshot" line
 	    	sr.begin(ShapeType.Line);
-	    	sr.translate(tx, ty, 0);
 		    sr.setColor(Color.LIGHT_GRAY);
-			sr.line(initPos.x, initPos.y, touchPos.x, touchPos.y);
-			sr.translate(-tx, -ty, 0);
+
+			sr.line(cinitPos.x,
+					getY()+getHeight()-cinitPos.y,
+					ctouchPos.x,
+					getY()+getHeight()-ctouchPos.y);
 			sr.end();
 	    }
+	    
+	    // draw particles
 	    renderParticles();
+	    
+	    // draw black bar on the bottom
+		sr.setProjectionMatrix(batch.getProjectionMatrix());
+		sr.setTransformMatrix(batch.getTransformMatrix());
+	    sr.begin(ShapeType.FilledRectangle);
+	    sr.setColor(0.1f, 0.1f, 0.1f, 1);
+	    sr.filledRect(0, 0, getWidth(), Gdx.graphics.getHeight()-getHeight());
+	    sr.end();
 	    batch.begin();
 	}
 	
@@ -157,6 +166,7 @@ public class Universe extends Actor {
 		
 		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1)) { // only one finger is touching
 			touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
+			ctouchPos.set(touchPos);
 			
 			if (null == this.hit(touchPos.x, touchPos.y, false)) {
 				addedParticle = true;
@@ -171,6 +181,7 @@ public class Universe extends Actor {
 				protoParticle.stop();
 				protoParticle.dragged = true;
 				initPos.set(touchPos);
+				cinitPos.set(ctouchPos);
 			}
 			
 			protoParticle.position(touchPos);
