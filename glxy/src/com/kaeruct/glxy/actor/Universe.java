@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
-import com.kaeruct.glxy.Particle;
+import com.kaeruct.glxy.model.Particle;
 
 public class Universe extends Actor {
 	OrthographicCamera camera;
@@ -25,7 +25,7 @@ public class Universe extends Actor {
 	CameraController controller;
 	public GestureDetector gestureDetector;
 	boolean addedParticle;
-	boolean panning;
+	public boolean panning;
 	
 	final float minRadius = 8;
     final float maxRadius = 100;
@@ -50,8 +50,6 @@ public class Universe extends Actor {
 
 		@Override
 		public boolean longPress (float x, float y) {
-			panning = true;
-			protoParticle.dragged = false;
 			return false;
 		}
 
@@ -110,12 +108,14 @@ public class Universe extends Actor {
 		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
 	}
 	
-	public void increaseParticleRadius() {
+	public float increaseParticleRadius() {
 		protoParticle.radius(Math.min(maxRadius, protoParticle.radius+5));
+		return protoParticle.radius;
 	}
 	
-	public void decreaseParticleRadius() {
+	public float decreaseParticleRadius() {
 		protoParticle.radius(Math.max(minRadius, protoParticle.radius-5));
+		return protoParticle.radius;
 	}
 	
 	@Override
@@ -147,10 +147,6 @@ public class Universe extends Actor {
 	}
 	
 	public void manageInput() {
-		if (!Gdx.input.isTouched(0)) {
-			panning = false;
-		}
-		
 		if (panning) return;
 		
 		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1)) { // only one finger is touching

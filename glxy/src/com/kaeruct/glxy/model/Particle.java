@@ -1,8 +1,8 @@
-package com.kaeruct.glxy;
+package com.kaeruct.glxy.model;
 
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector3;
-import com.kaeruct.glxy.Particle;
+import com.kaeruct.glxy.model.Particle;
 
 public class Particle extends Circle {
 	public double dx;
