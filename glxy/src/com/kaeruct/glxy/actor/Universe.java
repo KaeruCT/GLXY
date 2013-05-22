@@ -32,6 +32,11 @@ public class Universe extends Actor {
 	final float G = 0.5f; // gravity constant
 	final float sG = G * 0.1f; // multiplier for slingshot
 	
+	final Color colorSmall = new Color(0.6F, 0.8F, 0.8F, 0);
+	final Color colorMedium = new Color(1.0F, 0.95F, 0.27F, 0);
+	final Color colorLarge = new Color(1.0F, 0.35F, 0.27F, 0);
+	final Color colorHuge = new Color(0.24F, 0.1F, 0.27F, 0);
+	
 	class CameraController implements GestureListener {
 		float velX, velY;
 		boolean flinging = false;
@@ -240,10 +245,24 @@ public class Universe extends Actor {
 	}
 	
 	private void renderParticles() {
+		Color c;
+		
 		sr.begin(ShapeType.FilledCircle);
-	    sr.setColor(Color.WHITE);
 	    sr.setProjectionMatrix(camera.combined);
 		for (Particle p : particles) {
+			if (p.radius < 5) {
+				c = colorSmall;
+			} else if (p.radius <= 35) {
+				c = lerpColor(colorSmall, colorMedium, (p.radius - 5) / 35);
+			} else if (p.radius <= 70) {
+				c = lerpColor(colorMedium, colorLarge, (p.radius - 35) / 70);
+			} else if (p.radius <= 100) {
+				c = lerpColor(colorLarge, colorHuge, (p.radius - 70) / 100);
+			} else {
+				c = colorHuge;
+			}
+			
+			sr.setColor(c);
 			sr.filledCircle(p.x, p.y, p.radius);
 	    }
 		sr.end();
@@ -254,7 +273,16 @@ public class Universe extends Actor {
 		particles.add(p);
 		addedParticle = true;
 	}
-
+	
+	private Color lerpColor(Color start, Color target, float t) {
+		return new Color (
+			start.r + t * (target.r - start.r),
+			start.g + t * (target.g - start.g),
+			start.b + t * (target.b - start.b),
+			start.a + t * (target.a - start.a)
+		);
+	}
+	
 	public void dispose() {
 		sr.dispose();
 	}
