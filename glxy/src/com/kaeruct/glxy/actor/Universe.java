@@ -27,7 +27,7 @@ public class Universe extends Actor {
 	boolean addedParticle;
 	public boolean panning;
 	
-	final float minRadius = 8;
+	final float minRadius = 5;
     final float maxRadius = 100;
 	final float G = 0.5f; // gravity constant
 	final float sG = G * 0.1f; // multiplier for slingshot
