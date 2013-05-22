@@ -1,24 +1,11 @@
 package com.kaeruct.glxy;
 
 import java.lang.reflect.Constructor;
-import java.util.Iterator;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.kaeruct.glxy.Particle;
 import com.kaeruct.glxy.screen.Screen;
 
 public class GlxyGame implements ApplicationListener {
@@ -37,8 +24,8 @@ public class GlxyGame implements ApplicationListener {
 		
 		if (!screens.containsKey(name)) {
 			try {
-				Class screenClass =  Class.forName(name);   
-	            Constructor constructor = screenClass.getConstructor(GlxyGame.class);      
+				Class<?> screenClass =  Class.forName(name);   
+	            Constructor<?> constructor = screenClass.getConstructor(GlxyGame.class);      
 				newScreen = (Screen) constructor.newInstance(this);
 			} catch (Exception e) {
 				e.printStackTrace();

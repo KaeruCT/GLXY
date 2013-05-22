@@ -16,6 +16,7 @@ public class MainMenuScreen extends MenuScreen {
 		    	game.setScreen("GameScreen");
 		    }
 		});
+		t.pad(5, 10, 5, 10);
 		add(t);
 	}
 
