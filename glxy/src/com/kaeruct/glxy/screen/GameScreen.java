@@ -30,19 +30,22 @@ public class GameScreen extends Screen {
 		final TextButton t1 = new TextButton("+", skin);
 		t1.addListener(new ClickListener() {
 			@Override
-		    public void clicked(InputEvent event, float x, float y) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		    	float r = universe.increaseParticleRadius();
 		    	l1.setText("Size: "+r);
+		    	return false;
 		    }
 		});
 		t1.pad(padY, padX, padY, padX);
 		
 		final TextButton t2 = new TextButton("-", skin);
+		
 		t2.addListener(new ClickListener() {
 			@Override
-		    public void clicked(InputEvent event, float x, float y) {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 		    	float r = universe.decreaseParticleRadius();
 		    	l1.setText("Size: "+r);
+				return false;
 		    }
 		});
 		t2.pad(padY, padX, padY, padX);

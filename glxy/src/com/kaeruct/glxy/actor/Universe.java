@@ -29,13 +29,13 @@ public class Universe extends Actor {
 	
 	final float minRadius = 5;
     final float maxRadius = 100;
-	final float G = 0.5f; // gravity constant
-	final float sG = G * 0.1f; // multiplier for slingshot
+	final float G = 0.05f; // gravity constant
+	final float sG = G * 0.5f; // multiplier for slingshot
 	
-	final Color colorSmall = new Color(0.6F, 0.8F, 0.8F, 0);
-	final Color colorMedium = new Color(1.0F, 0.95F, 0.27F, 0);
-	final Color colorLarge = new Color(1.0F, 0.35F, 0.27F, 0);
-	final Color colorHuge = new Color(0.24F, 0.1F, 0.27F, 0);
+	final Color colorSmall = new Color(0.6f, 0.8f, 0.8f, 0);
+	final Color colorMedium = new Color(1.0f, 0.95f, 0.27f, 0);
+	final Color colorLarge = new Color(1.0f, 0.35f, 0.27f, 0);
+	final Color colorHuge = new Color(0.24f, 0.1f, 0.27f, 0);
 	
 	class CameraController implements GestureListener {
 		float velX, velY;
