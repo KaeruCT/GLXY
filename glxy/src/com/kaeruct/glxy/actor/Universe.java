@@ -151,7 +151,7 @@ public class Universe extends Actor {
 	    // draw particles
 	    renderParticles();
 	    
-	    // draw black bar on the bottom
+	    // draw black bar on the top
 		sr.setProjectionMatrix(batch.getProjectionMatrix());
 		sr.setTransformMatrix(batch.getTransformMatrix());
 	    sr.begin(ShapeType.FilledRectangle);

@@ -19,6 +19,8 @@ public class GameScreen extends Screen {
 	
 	public GameScreen (GlxyGame gg) {
 		super(gg);
+		final int padX = 20;
+		final int padY = 10;
 		
 		universe = new Universe();
 		
@@ -33,7 +35,7 @@ public class GameScreen extends Screen {
 		    	l1.setText("Size: "+r);
 		    }
 		});
-		t1.pad(5, 10, 5, 10);
+		t1.pad(padY, padX, padY, padX);
 		
 		final TextButton t2 = new TextButton("-", skin);
 		t2.addListener(new ClickListener() {
@@ -43,7 +45,7 @@ public class GameScreen extends Screen {
 		    	l1.setText("Size: "+r);
 		    }
 		});
-		t2.pad(5, 10, 5, 10);
+		t2.pad(padY, padX, padY, padX);
 		
 		final CheckBox b1 = new CheckBox("Pan", skin);
 		b1.addListener(new ChangeListener() {
@@ -52,11 +54,10 @@ public class GameScreen extends Screen {
 				universe.panning = b1.isChecked();
 			}
 		});
-		b1.pad(5, 10, 5, 10);
+		b1.pad(padY, padX, padY, padX);
 		
 		// set up table layout
-		table.add(universe).fill().expand().colspan(4);
-		table.row();
+		table.add(universe).expand().fill().colspan(4).row();
 		table.add(t2).pad(4);
 		table.add(t1).pad(4);
 		table.add(l1).pad(4);
