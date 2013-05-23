@@ -13,6 +13,7 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
 import com.kaeruct.glxy.model.Particle;
 
@@ -279,6 +280,8 @@ public class Universe extends Actor {
 		Particle p = new Particle(protoParticle);
 		particles.add(p);
 		addedParticle = true;
+		
+		this.fire(new ChangeEvent());
 	}
 	
 	private Color lerpColor(Color start, Color target, float t) {
@@ -292,6 +295,11 @@ public class Universe extends Actor {
 	
 	public void clearParticles() {
 		particles.clear();
+		this.fire(new ChangeEvent());
+	}
+	
+	public int getParticleCount() {
+		return particles.size;
 	}
 	
 	public void dispose() {

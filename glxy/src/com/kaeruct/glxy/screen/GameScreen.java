@@ -14,6 +14,7 @@ import com.esotericsoftware.tablelayout.Cell;
 import com.kaeruct.glxy.GlxyGame;
 import com.kaeruct.glxy.actor.Universe;
 
+
 public class GameScreen extends Screen {
 	private final Universe universe;
 	
@@ -59,6 +60,14 @@ public class GameScreen extends Screen {
 		});
 		t3.pad(padY, padX, padY, padX);
 		
+		final Label l2 = new Label("Count: "+universe.getParticleCount(), skin);
+		universe.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				l2.setText("Count: "+universe.getParticleCount());
+			}
+		});
+		
 		final CheckBox b1 = new CheckBox("Pan", skin);
 		b1.addListener(new ChangeListener() {
 			@Override
@@ -69,11 +78,12 @@ public class GameScreen extends Screen {
 		b1.pad(padY, padX, padY, padX);
 		
 		// set up table layout
-		table.add(universe).expand().fill().colspan(5).row();
+		table.add(universe).expand().fill().colspan(6).row();
 		table.add(t2).pad(4);
 		table.add(t1).pad(4);
 		table.add(l1).pad(4);
 		table.add(t3).pad(4);
+		table.add(l2).pad(4);
 		table.add(b1).align(BaseTableLayout.RIGHT).expandX().pad(4);
 		
 		// set up input
