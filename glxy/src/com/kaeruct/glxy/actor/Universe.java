@@ -18,13 +18,13 @@ import com.badlogic.gdx.utils.Array;
 import com.kaeruct.glxy.model.Particle;
 
 public class Universe extends Actor {
-	OrthographicCamera camera;
-	ShapeRenderer sr;
-	Particle protoParticle;
-	Array<Particle> particles;
-	Vector3 initPos, touchPos, cinitPos, ctouchPos;
-	CameraController controller;
-	public GestureDetector gestureDetector;
+	final OrthographicCamera camera;
+	final ShapeRenderer sr;
+	final Particle protoParticle;
+	final Array<Particle> particles;
+	final Vector3 initPos, touchPos, cinitPos, ctouchPos;
+	final CameraController controller;
+	final public GestureDetector gestureDetector;
 	boolean addedParticle;
 	public boolean panning;
 	
@@ -52,7 +52,7 @@ public class Universe extends Actor {
 		@Override
 		public boolean tap (float x, float y, int count, int button) {
 			touchPos.set(x, y, 0);
-			initPos.set(0, 0, 0);
+			initPos.set(0, 0, 0); // just to avoid instantiating a new vector
 			camera.unproject(touchPos);
 			protoParticle.dragged = false;
 			protoParticle.vel(initPos);
@@ -164,7 +164,7 @@ public class Universe extends Actor {
 	    // draw particles
 	    renderParticles();
 	    
-	    // draw black bar on the top
+	    // draw black bar on the bottom
 		sr.setProjectionMatrix(batch.getProjectionMatrix());
 		sr.setTransformMatrix(batch.getTransformMatrix());
 	    sr.begin(ShapeType.FilledRectangle);
@@ -177,7 +177,7 @@ public class Universe extends Actor {
 	public void manageInput() {
 		if (panning) return;
 		
-		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1)) { // only one finger is touching
+		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1) && !Gdx.input.justTouched()) { // only one finger is touching
 			touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
 			ctouchPos.set(touchPos);
 			
