@@ -75,6 +75,7 @@ public class GameScreen extends Screen {
 				universe.panning = b1.isChecked();
 			}
 		});
+		b1.setChecked(true);
 		b1.pad(padY, padX, padY, padX);
 		
 		// set up table layout
