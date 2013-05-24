@@ -2,18 +2,22 @@ package com.kaeruct.glxy.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.esotericsoftware.tablelayout.BaseTableLayout;
 import com.esotericsoftware.tablelayout.Cell;
 import com.kaeruct.glxy.GlxyGame;
+import com.kaeruct.glxy.actor.SettingsDialog;
 import com.kaeruct.glxy.actor.Universe;
-
 
 public class GameScreen extends Screen {
 	private final Universe universe;
@@ -68,6 +72,19 @@ public class GameScreen extends Screen {
 			}
 		});
 		
+		final SettingsDialog settingsDialog = new SettingsDialog(universe, skin);
+		final Texture settingsTexture = new Texture(Gdx.files.internal("data/gear.png"));
+		final TextureRegion settingsImage = new TextureRegion(settingsTexture); 
+		final ImageButton t4 = new ImageButton(new TextureRegionDrawable(settingsImage));
+		t4.addListener(new ClickListener() {
+			@Override
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				settingsDialog.show(stage);
+				return false;
+			}
+		});
+		t4.pad(padY, 0, padY, 0);
+		
 		final CheckBox b1 = new CheckBox("Pan", skin);
 		b1.addListener(new ChangeListener() {
 			@Override
@@ -79,7 +96,8 @@ public class GameScreen extends Screen {
 		b1.pad(padY, padX, padY, padX);
 		
 		// set up table layout
-		table.add(universe).expand().fill().colspan(6).row();
+		table.add(universe).expand().fill().colspan(7).row();
+		table.add(t4).pad(4);
 		table.add(t2).pad(4);
 		table.add(t1).pad(4);
 		table.add(l1).pad(4);

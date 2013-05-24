@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
 import com.kaeruct.glxy.model.Particle;
 
 public class Universe extends Actor {
@@ -25,6 +26,7 @@ public class Universe extends Actor {
 	final Vector3 initPos, touchPos, cinitPos, ctouchPos;
 	final CameraController controller;
 	final public GestureDetector gestureDetector;
+	private ArrayMap <String, Boolean> settings;
 	boolean addedParticle;
 	public boolean panning;
 	
@@ -106,7 +108,7 @@ public class Universe extends Actor {
 		}
 	}
 	
-	public Universe () {
+	public Universe (ArrayMap<String, Boolean> settings) {
 		addedParticle = true;
 		panning = false;
 		particles = new Array<Particle>();
@@ -121,6 +123,16 @@ public class Universe extends Actor {
 		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
+		
+		this.settings = settings;
+	}
+	
+	public Universe () {
+		this(new ArrayMap<String, Boolean>());
+	}
+	
+	public void setSetting(String name, Boolean value) {
+		settings.put(name, value);
 	}
 	
 	public float increaseParticleRadius() {
