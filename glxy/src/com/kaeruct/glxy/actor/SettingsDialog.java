@@ -26,7 +26,7 @@ public class SettingsDialog extends Dialog {
 		c1.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				universe.setSetting(setting, c1.isChecked());
+				universe.settings.put(setting, c1.isChecked());
 			}
 		});
 		content.row();
