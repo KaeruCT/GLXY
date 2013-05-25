@@ -81,7 +81,7 @@ public class GameScreen extends Screen {
 				settingsDialog.show(stage);
 			}
 		});
-		t4.pad(padY, padX, padY, padX);
+		t4.pad(padY, 0, padY, padX);
 		
 		final CheckBox b1 = new CheckBox("Pan", skin);
 		b1.addListener(new ChangeListener() {
@@ -95,13 +95,13 @@ public class GameScreen extends Screen {
 		
 		// set up table layout
 		table.add(universe).expand().fill().colspan(7).row();
-		table.add(t4).pad(4);
 		table.add(t2).pad(4);
 		table.add(t1).pad(4);
 		table.add(l1).pad(4);
 		table.add(t3).pad(4);
 		table.add(l2).pad(4);
-		table.add(b1).align(BaseTableLayout.RIGHT).expandX().pad(4);
+		table.add(b1).right().expandX().pad(4);
+		table.add(t4).right().pad(4);
 		
 		// set up input
 		InputMultiplexer im = new InputMultiplexer(stage, universe.gestureDetector);
