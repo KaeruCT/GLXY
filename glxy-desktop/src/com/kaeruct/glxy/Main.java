@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "glxy";
-		cfg.useGL20 = false;
+		cfg.useGL20 = true;
 		cfg.width = 640;
 		cfg.height = 480;
 		

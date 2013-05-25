@@ -57,9 +57,8 @@ public class GameScreen extends Screen {
 		final TextButton t3 = new TextButton("Reset", skin);
 		t3.addListener(new ClickListener() {
 			@Override
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+			public void clicked(InputEvent event, float x, float y) {
 				universe.clearParticles();
-				return false;
 			}
 		});
 		t3.pad(padY, padX, padY, padX);
@@ -78,12 +77,11 @@ public class GameScreen extends Screen {
 		final ImageButton t4 = new ImageButton(new TextureRegionDrawable(settingsImage));
 		t4.addListener(new ClickListener() {
 			@Override
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+			public void clicked(InputEvent event, float x, float y) {
 				settingsDialog.show(stage);
-				return false;
 			}
 		});
-		t4.pad(padY, 0, padY, 0);
+		t4.pad(padY, padX, padY, padX);
 		
 		final CheckBox b1 = new CheckBox("Pan", skin);
 		b1.addListener(new ChangeListener() {
