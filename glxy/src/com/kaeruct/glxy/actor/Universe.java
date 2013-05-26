@@ -41,11 +41,45 @@ public class Universe extends Actor {
     final float maxRadius = 100;
 	final float G = 0.05f; // gravity constant
 	final float sG = G * 0.5f; // multiplier for slingshot
-	
-	final Color colorSmall = new Color(0.6f, 0.8f, 0.8f, 1.0f);
-	final Color colorMedium = new Color(1.0f, 0.95f, 0.27f, 1.0f);
-	final Color colorLarge = new Color(1.0f, 0.35f, 0.27f, 1.0f);
-	final Color colorHuge = new Color(0.24f, 0.1f, 0.27f, 1.0f);
+
+	private enum ParticleColor {
+		SMALL (5, 0.6f, 0.8f, 0.8f, 0),
+		MEDIUM (35, 1.0f, 0.95f, 0.27f, 0),
+		LARGE (70, 1.0f, 0.35f, 0.27f, 0),
+		HUGE (100, 0.24f, 0.1f, 0.27f, 0);
+		
+		private final float cutoff; // the cutoff radius for this color
+		private final Color color;		
+		private ParticleColor (float cutoff, float r, float g, float b, float a) {
+			this.cutoff = cutoff;
+			this.color = new Color(r, g, b, a);
+		}
+		
+		public Color lerp(Color target, float t) {
+			return new Color (
+				this.color.r + t * (target.r - this.color.r),
+				this.color.g + t * (target.g - this.color.g),
+				this.color.b + t * (target.b - this.color.b),
+				this.color.a + t * (target.a - this.color.a)
+			);
+		}
+		
+		// get a color for a specific radius, interpolating if necessary
+		public static Color get(float radius) {
+			ParticleColor prev = null;
+			for (ParticleColor c: ParticleColor.values()) {
+				if (radius < c.cutoff) {
+					if (prev == null) {
+						return c.color;
+					} else {
+						return prev.lerp(c.color, (radius - prev.cutoff) / c.cutoff);
+					}
+				}
+				prev = c;
+			}
+			return HUGE.color;
+		}
+	}
 	
 	class CameraController implements GestureListener {
 		float velX, velY;
@@ -283,17 +317,7 @@ public class Universe extends Actor {
 		sr.begin(ShapeType.FilledCircle);
 	    sr.setProjectionMatrix(camera.combined);
 		for (Particle p : particles) {
-			if (p.radius < 5) {
-				c = colorSmall;
-			} else if (p.radius <= 35) {
-				c = lerpColor(colorSmall, colorMedium, (p.radius - 5) / 35);
-			} else if (p.radius <= 70) {
-				c = lerpColor(colorMedium, colorLarge, (p.radius - 35) / 70);
-			} else if (p.radius <= 100) {
-				c = lerpColor(colorLarge, colorHuge, (p.radius - 70) / 100);
-			} else {
-				c = colorHuge;
-			}
+			c = ParticleColor.get(p.radius);
 			
 			sr.setColor(c);
 			sr.filledCircle(p.x, p.y, p.radius);
@@ -317,15 +341,6 @@ public class Universe extends Actor {
 		addedParticle = true;
 		
 		this.fire(new ChangeEvent());
-	}
-	
-	private Color lerpColor(Color start, Color target, float t) {
-		return new Color (
-			start.r + t * (target.r - start.r),
-			start.g + t * (target.g - start.g),
-			start.b + t * (target.b - start.b),
-			start.a + t * (target.a - start.a)
-		);
 	}
 	
 	public void clearParticles() {
