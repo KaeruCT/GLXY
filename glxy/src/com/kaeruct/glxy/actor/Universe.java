@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.kaeruct.glxy.model.Particle;
 import com.kaeruct.glxy.model.Settings;
+import com.kaeruct.glxy.model.Settings.Setting;
 
 public class Universe extends Actor {
 	final OrthographicCamera camera;
@@ -297,7 +298,7 @@ public class Universe extends Actor {
 			sr.setColor(c);
 			sr.filledCircle(p.x, p.y, p.radius);
 			
-			if (settings.get("trails", true)) {
+			if (settings.get(Setting.TRAILS)) {
 				sr.end();
 				fbo.begin();
 				sr.begin(ShapeType.FilledCircle);

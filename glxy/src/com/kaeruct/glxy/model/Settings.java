@@ -2,11 +2,22 @@ package com.kaeruct.glxy.model;
 
 import com.badlogic.gdx.utils.ArrayMap;
 
-public class Settings extends ArrayMap<String, Boolean> {
-	public Boolean get (String key, Boolean dVal) {
-		if (containsKey(key)) {
-			return get(key);
+public class Settings extends ArrayMap<Settings.Setting, Boolean> {
+	public enum Setting {
+		TRAILS ("Trails", false);
+		
+		public final String description;
+		public final boolean defaultVal;
+		
+		Setting(String d, boolean dv) {
+			description = d;
+			defaultVal = dv;
 		}
-		return dVal;
+	}
+	
+	public Settings() {
+		for (Setting setting : Setting.values()) {
+			put(setting, setting.defaultVal);
+		}
 	}
 }

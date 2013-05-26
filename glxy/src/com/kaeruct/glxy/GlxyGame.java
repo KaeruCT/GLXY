@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.kaeruct.glxy.screen.Screen;
 
@@ -14,6 +15,7 @@ public class GlxyGame implements ApplicationListener {
 
 	@Override
 	public void create() {
+		Dialog.fadeDuration = 0;
         screens = new ArrayMap<String, Screen>();
         setScreen("MainMenuScreen");
 	}
