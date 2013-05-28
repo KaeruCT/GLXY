@@ -50,7 +50,7 @@ public class Particle extends Circle {
 		dead = false;
 	}
 	
-	// returns wether the particle is still alive
+	// returns whether the particle is still alive
 	public boolean update() {
 		x += dx;
 		y += dy;
