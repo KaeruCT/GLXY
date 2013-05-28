@@ -36,7 +36,7 @@ public class Universe extends Actor {
 	public Settings settings;
 	boolean addedParticle;
 	public boolean panning;
-	
+
 	final float minRadius = 5;
     final float maxRadius = 100;
 	final float G = 0.05f; // gravity constant
@@ -47,14 +47,14 @@ public class Universe extends Actor {
 		MEDIUM (35, 1.0f, 0.95f, 0.27f, 0),
 		LARGE (70, 1.0f, 0.35f, 0.27f, 0),
 		HUGE (100, 0.24f, 0.1f, 0.27f, 0);
-		
+
 		private final float cutoff; // the cutoff radius for this color
-		private final Color color;		
+		private final Color color;
 		private ParticleColor (float cutoff, float r, float g, float b, float a) {
 			this.cutoff = cutoff;
 			this.color = new Color(r, g, b, a);
 		}
-		
+
 		public Color lerp(Color target, float t) {
 			return new Color (
 				this.color.r + t * (target.r - this.color.r),
@@ -63,7 +63,7 @@ public class Universe extends Actor {
 				this.color.a + t * (target.a - this.color.a)
 			);
 		}
-		
+
 		// get a color for a specific radius, interpolating if necessary
 		public static Color get(float radius) {
 			ParticleColor prev = null;
@@ -80,7 +80,7 @@ public class Universe extends Actor {
 			return HUGE.color;
 		}
 	}
-	
+
 	class CameraController implements GestureListener {
 		float velX, velY;
 		boolean flinging = false;
@@ -122,7 +122,7 @@ public class Universe extends Actor {
 			if (panning) {
 				camera.position.add(-deltaX * camera.zoom, deltaY * camera.zoom, 0);
 			}
-			
+
 			return false;
 		}
 
@@ -148,7 +148,7 @@ public class Universe extends Actor {
 			}
 		}
 	}
-	
+
 	public Universe (Settings settings) {
 		addedParticle = true;
 		panning = false;
@@ -158,31 +158,31 @@ public class Universe extends Actor {
 		initPos = new Vector3();
 		ctouchPos = new Vector3();
 		cinitPos = new Vector3();
-		
+
 		fbo = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		protoParticle = (new Particle()).radius(minRadius);
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
-		
+
 		this.settings = settings;
 	}
-	
+
 	public Universe () {
 		this(new Settings());
 	}
-	
+
 	public float increaseParticleRadius() {
 		protoParticle.radius(Math.min(maxRadius, protoParticle.radius+5));
 		return protoParticle.radius;
 	}
-	
+
 	public float decreaseParticleRadius() {
 		protoParticle.radius(Math.max(minRadius, protoParticle.radius-5));
 		return protoParticle.radius;
 	}
-	
+
 	@Override
 	public void act(float delta) {
 	    manageInput();
@@ -193,7 +193,7 @@ public class Universe extends Actor {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		camera.update();
 		batch.end();
-		
+
 		// fill background
 		sr.begin(ShapeType.FilledRectangle);
 		sr.setColor(0.1f, 0.1f, 0.2f, 1);
@@ -211,7 +211,7 @@ public class Universe extends Actor {
 					getY()+getHeight()-ctouchPos.y);
 			sr.end();
 	    }
-	    
+
 	    // copy the framebuffer over
 	    batch.begin();
 	    TextureRegion fboRegion = new TextureRegion(fbo.getColorBufferTexture());
@@ -219,10 +219,10 @@ public class Universe extends Actor {
 	    TextureRegionDrawable fboTexture = new TextureRegionDrawable(fboRegion);
         fboTexture.draw(batch, 0, 0, fbo.getWidth(), fbo.getHeight());
         batch.end();
-        
+
 	    // draw particles and trails
 	    renderParticles();
-        
+
 	    // draw black bar on the bottom
 		sr.setProjectionMatrix(batch.getProjectionMatrix());
 		sr.setTransformMatrix(batch.getTransformMatrix());
@@ -232,30 +232,30 @@ public class Universe extends Actor {
 	    sr.end();
 	    batch.begin();
 	}
-	
+
 	public void manageInput() {
 		if (panning) return;
-		
+
 		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1) && !Gdx.input.justTouched()) { // only one finger is touching
 			touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
 			ctouchPos.set(touchPos);
-			
+
 			if (null == this.hit(touchPos.x, touchPos.y, false)) {
 				addedParticle = true;
 				protoParticle.dragged = false;
 				return;
 			}
-			
+
 			camera.unproject(touchPos);
 			addedParticle = false;
-			
+
 			if (!protoParticle.dragged) {
 				protoParticle.stop();
 				protoParticle.dragged = true;
 				initPos.set(touchPos);
 				cinitPos.set(ctouchPos);
 			}
-			
+
 			protoParticle.position(touchPos);
 		} else if (!addedParticle) {
 			protoParticle.dragged = false;
@@ -264,13 +264,13 @@ public class Universe extends Actor {
 			addParticle();
 		}
 	}
-	
+
 	private void updateParticles() {
 		Iterator<Particle> it;
 		for (int i = 0; i < particles.size; i++) {
 			Particle p = particles.get(i);
 			if (p.dead) continue;
-			
+
 			for (int j = 0; j < particles.size; j++) {
 				Particle p2 = particles.get(j);
 				if (p2.dead || i == j) continue;
@@ -279,11 +279,11 @@ public class Universe extends Actor {
 	            float dy = p2.y - p.y;
 	            float d = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 	            if (d == 0) d = 1;
-	            
+
 	            if (p.collidesWith(p2)) {
 	            	// collision
 	                float mtd = 2*(p.radius + p2.radius - d)/d;
-	
+
 	                p2.x += dx * mtd / p2.radius;
 	                p2.y += dy * mtd / p2.radius;
 	                p.x -= dx * mtd / p.radius;
@@ -301,7 +301,7 @@ public class Universe extends Actor {
 	            }
 			}
 	    }
-		
+
 		it = particles.iterator();
 		while (it.hasNext()) {
 			Particle p = it.next();
@@ -310,18 +310,17 @@ public class Universe extends Actor {
 			}
 		}
 	}
-	
+
 	private void renderParticles() {
 		Color c;
-		
+
 		sr.begin(ShapeType.FilledCircle);
 	    sr.setProjectionMatrix(camera.combined);
 		for (Particle p : particles) {
 			c = ParticleColor.get(p.radius);
-			
+
 			sr.setColor(c);
 			sr.filledCircle(p.x, p.y, p.radius);
-			
 			if (settings.get(Setting.TRAILS)) {
 				sr.end();
 				fbo.begin();
@@ -334,31 +333,31 @@ public class Universe extends Actor {
 	    }
 		sr.end();
 	}
- 
+
 	private void addParticle() {
 		Particle p = new Particle(protoParticle);
 		particles.add(p);
 		addedParticle = true;
-		
+
 		this.fire(new ChangeEvent());
 	}
-	
+
 	public void clearParticles() {
 		particles.clear();
-		
+
 		// clear the trail framebuffer
 		fbo.begin();
 		Gdx.graphics.getGL20().glClearColor(0, 0, 0, 0);
 		Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
 		fbo.end();
-		
+
 		this.fire(new ChangeEvent());
 	}
-	
+
 	public int getParticleCount() {
 		return particles.size;
 	}
-	
+
 	public void dispose() {
 		sr.dispose();
 	}

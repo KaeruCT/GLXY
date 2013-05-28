@@ -15,7 +15,7 @@ public class GlxyGame implements ApplicationListener {
 
 	@Override
 	public void create() {
-		Dialog.fadeDuration = 0;
+		//Dialog.fadeDuration = 0;
         screens = new ArrayMap<String, Screen>();
         setScreen("MainMenuScreen");
 	}
