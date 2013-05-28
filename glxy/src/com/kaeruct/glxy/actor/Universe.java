@@ -43,10 +43,10 @@ public class Universe extends Actor {
 	final float sG = G * 0.5f; // multiplier for slingshot
 
 	private enum ParticleColor {
-		SMALL (5, 0.6f, 0.8f, 0.8f, 0),
-		MEDIUM (35, 1.0f, 0.95f, 0.27f, 0),
-		LARGE (70, 1.0f, 0.35f, 0.27f, 0),
-		HUGE (100, 0.24f, 0.1f, 0.27f, 0);
+		SMALL (5, 0.6f, 0.8f, 0.8f, 1.0f),
+		MEDIUM (35, 1.0f, 0.95f, 0.27f, 1.0f),
+		LARGE (70, 1.0f, 0.35f, 0.27f, 1.0f),
+		HUGE (100, 0.24f, 0.1f, 0.27f, 1.0f);
 
 		private final float cutoff; // the cutoff radius for this color
 		private final Color color;
