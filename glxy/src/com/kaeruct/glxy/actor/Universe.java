@@ -271,16 +271,26 @@ public class Universe extends Actor {
 
 	            if (p.collidesWith(p2)) {
 	            	// collision
-	                float mtd = 2*(p.radius + p2.radius - d)/d;
-
-	                p2.x += dx * mtd / p2.radius;
-	                p2.y += dy * mtd / p2.radius;
-	                p.x -= dx * mtd / p.radius;
-	                p.y -= dy * mtd / p.radius;
-	                p2.dx += dx * mtd / p2.mass;
-	                p2.dy += dy * mtd / p2.mass;
-	                p.dx -= dx * mtd / p.mass;
-	                p.dy -= dy * mtd / p.mass;
+	            	if (settings.get(Setting.COLLISION)) {
+	            		float mtd = 2*(p.radius + p2.radius - d)/d;
+		                p2.x += dx * mtd / p2.radius;
+		                p2.y += dy * mtd / p2.radius;
+		                p.x -= dx * mtd / p.radius;
+		                p.y -= dy * mtd / p.radius;
+		                p2.dx += dx * mtd / p2.mass;
+		                p2.dy += dy * mtd / p2.mass;
+		                p.dx -= dx * mtd / p.mass;
+		                p.dy -= dy * mtd / p.mass;
+	            	} else {
+		                if (p.radius > p2.radius) {
+                            p.radius += Math.sqrt(p2.radius/2);
+                            p2.kill();
+                            break;
+                        } else {
+                            p2.radius += Math.sqrt(p.radius/2);
+                            p.kill();
+                        }
+	            	}
 	            } else {
 	            	// "gravity"
 	            	float force = (float) (G * p.mass * p2.mass / Math.pow(d, 2));

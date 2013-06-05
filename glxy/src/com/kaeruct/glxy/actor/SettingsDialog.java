@@ -31,6 +31,7 @@ public class SettingsDialog extends Dialog {
 		
 		// add checkboxes
 		addCheckbox(Setting.TRAILS, skin);
+		addCheckbox(Setting.COLLISION, skin);
 		
 		// add reset button
 		final TextButton resetButton = new TextButton("Reset", skin);
