@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.kaeruct.glxy.model.Particle;
 
 public class Particle extends Circle {
+	public float oldx;
+	public float oldy;
 	public double dx;
 	public double dy;
 	public float mass;
@@ -52,6 +54,8 @@ public class Particle extends Circle {
 	
 	// returns whether the particle is still alive
 	public boolean update() {
+		oldx = x;
+		oldy = y;
 		x += dx;
 		y += dy;
     	return !dead;

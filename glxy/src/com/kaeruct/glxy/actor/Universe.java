@@ -5,11 +5,7 @@ import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
@@ -18,7 +14,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.kaeruct.glxy.model.Particle;
 import com.kaeruct.glxy.model.Settings;
@@ -27,9 +22,9 @@ import com.kaeruct.glxy.model.Settings.Setting;
 public class Universe extends Actor {
 	final OrthographicCamera camera;
 	final ShapeRenderer sr;
-	final FrameBuffer fbo;
 	final Particle protoParticle;
 	final Array<Particle> particles;
+	final TrailParticleManager trailParticles;
 	final Vector3 initPos, touchPos, cinitPos, ctouchPos;
 	final CameraController controller;
 	final public GestureDetector gestureDetector;
@@ -159,13 +154,14 @@ public class Universe extends Actor {
 		ctouchPos = new Vector3();
 		cinitPos = new Vector3();
 
-		fbo = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		protoParticle = (new Particle()).radius(minRadius);
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
 
+		trailParticles = new TrailParticleManager(500);
+		
 		this.settings = settings;
 	}
 
@@ -211,21 +207,13 @@ public class Universe extends Actor {
 					getY()+getHeight()-ctouchPos.y);
 			sr.end();
 	    }
-
-	    // copy the framebuffer over
-	    batch.begin();
-	    TextureRegion fboRegion = new TextureRegion(fbo.getColorBufferTexture());
-	    fboRegion.flip(false, true); // the texture gets drawn upside-down
-	    TextureRegionDrawable fboTexture = new TextureRegionDrawable(fboRegion);
-        fboTexture.draw(batch, 0, 0, fbo.getWidth(), fbo.getHeight());
-        batch.end();
-
+	    
 	    // draw particles and trails
 	    renderParticles();
 
 	    // draw black bar on the bottom
-		sr.setProjectionMatrix(batch.getProjectionMatrix());
-		sr.setTransformMatrix(batch.getTransformMatrix());
+	    sr.setProjectionMatrix(batch.getProjectionMatrix());
+	    sr.setTransformMatrix(batch.getTransformMatrix());
 	    sr.begin(ShapeType.FilledRectangle);
 	    sr.setColor(0.1f, 0.1f, 0.1f, 1);
 	    sr.filledRect(0, 0, getWidth(), Gdx.graphics.getHeight()-getHeight());
@@ -308,7 +296,7 @@ public class Universe extends Actor {
 			if (!p.update()) {
 				it.remove();
 			}
-		}
+		}	
 	}
 
 	private void renderParticles() {
@@ -318,19 +306,20 @@ public class Universe extends Actor {
 	    sr.setProjectionMatrix(camera.combined);
 		for (Particle p : particles) {
 			c = ParticleColor.get(p.radius);
+			if (settings.get(Setting.TRAILS)) {
+				if (Math.abs(p.x - p.oldx) > 0.2 || Math.abs(p.y - p.oldy) > 0.2) {
+					trailParticles.add(p.x, p.y, p.radius * 0.2F, c);
+				}
+			}
 
 			sr.setColor(c);
 			sr.filledCircle(p.x, p.y, p.radius);
-			if (settings.get(Setting.TRAILS)) {
-				sr.end();
-				fbo.begin();
-				sr.begin(ShapeType.FilledCircle);
-				sr.filledCircle(p.x, p.y, (float)Math.sqrt(Math.sqrt(p.radius)));
-				sr.end();
-				fbo.end();
-				sr.begin(ShapeType.FilledCircle);
-			}
 	    }
+		
+		if (settings.get(Setting.TRAILS)) {
+			trailParticles.render(sr);
+		}
+		
 		sr.end();
 	}
 
@@ -344,12 +333,8 @@ public class Universe extends Actor {
 
 	public void clearParticles() {
 		particles.clear();
-
-		// clear the trail framebuffer
-		fbo.begin();
-		Gdx.graphics.getGL20().glClearColor(0, 0, 0, 0);
-		Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
-		fbo.end();
+		
+		// TODO: reset trailParticles
 
 		this.fire(new ChangeEvent());
 	}
