@@ -9,12 +9,12 @@ public abstract class MenuScreen extends Screen {
 		super(gg);
 	}
 
-	public Cell add(Actor actor) {
+	public Cell<?> add(Actor actor) {
 		return add(actor, 200);
 	}
 	
-	public Cell add(Actor actor, float width) {
-		Cell c = table.add(actor).width(width);
+	public Cell<?> add(Actor actor, float width) {
+		Cell<?> c = table.add(actor).width(width);
 		table.row();
 		return c;
 	}

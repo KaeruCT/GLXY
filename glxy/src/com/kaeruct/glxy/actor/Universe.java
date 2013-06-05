@@ -34,8 +34,9 @@ public class Universe extends Actor {
 
 	final float minRadius = 5;
     final float maxRadius = 100;
-	final float G = 0.05f; // gravity constant
+	final float G = 0.09f; // gravity constant
 	final float sG = G * 0.5f; // multiplier for slingshot
+	final int maxTrails = 500; // max trails for a particle
 
 	private enum ParticleColor {
 		SMALL (5, 0.6f, 0.8f, 0.8f, 1.0f),
@@ -160,7 +161,7 @@ public class Universe extends Actor {
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
 
-		trailParticles = new TrailParticleManager(500);
+		trailParticles = new TrailParticleManager(maxTrails);
 		
 		this.settings = settings;
 	}
@@ -308,7 +309,7 @@ public class Universe extends Actor {
 			c = ParticleColor.get(p.radius);
 			if (settings.get(Setting.TRAILS)) {
 				if (Math.abs(p.x - p.oldx) > 0.2 || Math.abs(p.y - p.oldy) > 0.2) {
-					trailParticles.add(p.x, p.y, p.radius * 0.2F, c);
+					trailParticles.add(p.x, p.y, p.radius, c);
 				}
 			}
 

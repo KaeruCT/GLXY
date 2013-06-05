@@ -15,4 +15,8 @@ public class TrailParticle extends Circle {
 		set(x, y, radius);
 		this.color = color;
 	}
+
+	public void shrink() {
+		radius -= Math.sqrt(radius) * 0.2f;
+	}
 }

@@ -52,15 +52,6 @@ public class GameScreen extends Screen {
 		});
 		t2.pad(padY, padX, padY, padX);
 		
-		final TextButton t3 = new TextButton("Reset", skin);
-		t3.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				universe.clearParticles();
-			}
-		});
-		t3.pad(padY, padX, padY, padX);
-		
 		final Label l2 = new Label("Count: "+universe.getParticleCount(), skin);
 		universe.addListener(new ChangeListener() {
 			@Override
@@ -69,7 +60,7 @@ public class GameScreen extends Screen {
 			}
 		});
 		
-		final SettingsDialog settingsDialog = new SettingsDialog(universe, skin);
+		final SettingsDialog settingsDialog = new SettingsDialog(universe, skin, padX, padY);
 		final Texture settingsTexture = new Texture(Gdx.files.internal("data/gear.png"));
 		final TextureRegion settingsImage = new TextureRegion(settingsTexture); 
 		final ImageButton t4 = new ImageButton(new TextureRegionDrawable(settingsImage));
@@ -91,11 +82,10 @@ public class GameScreen extends Screen {
 		b1.pad(padY, padX, padY, padX);
 		
 		// set up table layout
-		table.add(universe).expand().fill().colspan(7).row();
+		table.add(universe).expand().fill().colspan(6).row();
 		table.add(t2).pad(4);
 		table.add(t1).pad(4);
 		table.add(l1).pad(4);
-		table.add(t3).pad(4);
 		table.add(l2).pad(4);
 		table.add(b1).right().expandX().pad(4);
 		table.add(t4).right().pad(4);

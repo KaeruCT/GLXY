@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.ArrayMap;
 
 public class Settings extends ArrayMap<Settings.Setting, Boolean> {
 	public enum Setting {
-		TRAILS ("Trails", false);
+		TRAILS ("Trails", true);
 		
 		public final String description;
 		public final boolean defaultVal;
