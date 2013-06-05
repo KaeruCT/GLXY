@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -37,6 +38,7 @@ public class Universe extends Actor {
 	final float G = 0.09f; // gravity constant
 	final float sG = G * 0.5f; // multiplier for slingshot
 	final int maxTrails = 500; // max trails for a particle
+	private Rectangle bottomBar = null;
 
 	private enum ParticleColor {
 		SMALL (5, 0.6f, 0.8f, 0.8f, 1.0f),
@@ -90,6 +92,8 @@ public class Universe extends Actor {
 
 		@Override
 		public boolean tap (float x, float y, int count, int button) {
+			if (touchBottomBar(x, y)) return true;
+			
 			touchPos.set(x, y, 0);
 			initPos.set(0, 0, 0); // just to avoid instantiating a new vector
 			camera.unproject(touchPos);
@@ -145,7 +149,7 @@ public class Universe extends Actor {
 		}
 	}
 
-	public Universe (Settings settings) {
+	public Universe (Settings s) {
 		addedParticle = true;
 		panning = false;
 		particles = new Array<Particle>();
@@ -163,7 +167,7 @@ public class Universe extends Actor {
 
 		trailParticles = new TrailParticleManager(maxTrails);
 		
-		this.settings = settings;
+		settings = s;
 	}
 
 	public Universe () {
@@ -225,7 +229,12 @@ public class Universe extends Actor {
 	public void manageInput() {
 		if (panning) return;
 
-		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1) && !Gdx.input.justTouched()) { // only one finger is touching
+
+		if (Gdx.input.isTouched(0) &&
+			!Gdx.input.isTouched(1) &&
+			!Gdx.input.justTouched() && // only one finger is touching
+			!touchBottomBar(Gdx.input.getX(0), Gdx.input.getY(0))) { // not touching the bar at the bottom
+			
 			touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
 			ctouchPos.set(touchPos);
 
@@ -252,6 +261,13 @@ public class Universe extends Actor {
 			protoParticle.position(touchPos);
 			addParticle();
 		}
+	}
+
+	private boolean touchBottomBar(float x, float y) {
+		if (bottomBar == null) {
+			bottomBar = new Rectangle(0, 0, getWidth(), Gdx.graphics.getHeight()-getHeight());
+		}
+		return bottomBar.contains(x, Gdx.graphics.getHeight() - y);
 	}
 
 	private void updateParticles() {
