@@ -41,5 +41,9 @@ public class TrailParticleManager {
 				tpi.remove();
 			}
 		}
-	}	
+	}
+	
+	public void clear () {
+		particles.clear();
+	}
 }

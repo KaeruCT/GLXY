@@ -344,10 +344,13 @@ public class Universe extends Actor {
 
 	public void clearParticles() {
 		particles.clear();
-		
-		// TODO: reset trailParticles
+		clearTrails();
 
 		this.fire(new ChangeEvent());
+	}
+	
+	public void clearTrails() {
+		trailParticles.clear();
 	}
 
 	public int getParticleCount() {

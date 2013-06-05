@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.kaeruct.glxy.GlxyGame;
 import com.kaeruct.glxy.actor.SettingsDialog;
 import com.kaeruct.glxy.actor.Universe;
+import com.kaeruct.glxy.model.Settings.Setting;
 
 public class GameScreen extends Screen {
 	private final Universe universe;
@@ -61,6 +62,14 @@ public class GameScreen extends Screen {
 		});
 		
 		final SettingsDialog settingsDialog = new SettingsDialog(universe, skin, padX, padY);
+		settingsDialog.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (!universe.settings.get(Setting.TRAILS)) {
+					universe.clearTrails();
+				}
+			}
+		});
 		final Texture settingsTexture = new Texture(Gdx.files.internal("data/gear.png"));
 		final TextureRegion settingsImage = new TextureRegion(settingsTexture); 
 		final ImageButton t4 = new ImageButton(new TextureRegionDrawable(settingsImage));
