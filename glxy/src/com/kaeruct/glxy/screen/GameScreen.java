@@ -1,6 +1,7 @@
 package com.kaeruct.glxy.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -9,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -21,6 +21,7 @@ import com.kaeruct.glxy.model.Settings.Setting;
 
 public class GameScreen extends Screen {
 	private final Universe universe;
+	private final SettingsDialog settingsDialog;
 	
 	public GameScreen (GlxyGame gg) {
 		super(gg);
@@ -49,7 +50,7 @@ public class GameScreen extends Screen {
 			}
 		});
 		
-		final SettingsDialog settingsDialog = new SettingsDialog(universe, skin, padX, padY);
+		settingsDialog = new SettingsDialog(universe, skin, padX, padY);
 		settingsDialog.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -81,7 +82,7 @@ public class GameScreen extends Screen {
 		// set up table layout
 		table.add(universe).expand().fill().colspan(6).row();
 		table.add(l2).pad(4);
-		table.add(l1).pad(4).minWidth(80f).fillX();
+		table.add(l1).pad(4).minWidth(20f).fillX();
 		table.add(rSlider).right().pad(4).expandX();
 		table.add(b1).right().expandX().pad(4);
 		table.add(t4).right().pad(4);
@@ -91,6 +92,14 @@ public class GameScreen extends Screen {
 		// set up input
 		InputMultiplexer im = new InputMultiplexer(stage, universe.gestureDetector);
 		Gdx.input.setInputProcessor(im);
+	}
+	
+	@Override
+	public void render(float delta) {
+		super.render(delta);
+		if (Gdx.input.isKeyPressed(Keys.MENU)) {
+			settingsDialog.show(stage);
+		}
 	}
 	
 	@Override
