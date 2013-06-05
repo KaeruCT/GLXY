@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -29,29 +30,16 @@ public class GameScreen extends Screen {
 		universe = new Universe();
 		
 		// set up widgets
-		float r = universe.decreaseParticleRadius();
-		final Label l1 = new Label("Size: "+r, skin);
-		final TextButton t1 = new TextButton("+", skin);
-		t1.addListener(new ClickListener() {
-			@Override
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		    	float r = universe.increaseParticleRadius();
-		    	l1.setText("Size: "+r);
-		    	return false;
-		    }
-		});
-		t1.pad(padY, padX, padY, padX);
+		final Label l1 = new Label("Size: " + (int)universe.getParticleRadius(), skin);
 		
-		final TextButton t2 = new TextButton("-", skin);
-		t2.addListener(new ClickListener() {
+		final Slider rSlider = new Slider(universe.minRadius, universe.maxRadius, universe.radiusStep, false, skin);
+		rSlider.addListener(new ChangeListener() {
 			@Override
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-		    	float r = universe.decreaseParticleRadius();
-		    	l1.setText("Size: "+r);
-				return false;
-		    }
+			public void changed(ChangeEvent event, Actor actor) {
+				universe.setParticleRadius(rSlider.getValue());
+				l1.setText("Size: " + (int)rSlider.getValue());
+			}
 		});
-		t2.pad(padY, padX, padY, padX);
 		
 		final Label l2 = new Label("Count: "+universe.getParticleCount(), skin);
 		universe.addListener(new ChangeListener() {
@@ -93,11 +81,12 @@ public class GameScreen extends Screen {
 		// set up table layout
 		table.add(universe).expand().fill().colspan(6).row();
 		table.add(l2).pad(4);
-		table.add(l1).pad(4).expandX();
-		table.add(t2).pad(4);
-		table.add(t1).pad(4);
+		table.add(l1).pad(4).minWidth(80f).fillX();
+		table.add(rSlider).right().pad(4).expandX();
 		table.add(b1).right().expandX().pad(4);
 		table.add(t4).right().pad(4);
+		
+		rSlider.setValue(universe.getParticleRadius());
 		
 		// set up input
 		InputMultiplexer im = new InputMultiplexer(stage, universe.gestureDetector);

@@ -33,8 +33,9 @@ public class Universe extends Actor {
 	boolean addedParticle;
 	public boolean panning;
 
-	final float minRadius = 5;
-    final float maxRadius = 100;
+	public final float minRadius = 5;
+	public final float maxRadius = 80;
+	public final float radiusStep = 5;
 	final float G = 0.09f; // gravity constant
 	final float sG = G * 0.5f; // multiplier for slingshot
 	final int maxTrails = 500; // max trails for a particle
@@ -161,7 +162,7 @@ public class Universe extends Actor {
 
 		protoParticle = (new Particle()).radius(minRadius);
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
+		camera.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
 
@@ -174,14 +175,12 @@ public class Universe extends Actor {
 		this(new Settings());
 	}
 
-	public float increaseParticleRadius() {
-		protoParticle.radius(Math.min(maxRadius, protoParticle.radius+5));
+	public float getParticleRadius() {
 		return protoParticle.radius;
 	}
-
-	public float decreaseParticleRadius() {
-		protoParticle.radius(Math.max(minRadius, protoParticle.radius-5));
-		return protoParticle.radius;
+	
+	public void setParticleRadius(float r) {
+		protoParticle.radius = r;
 	}
 
 	@Override
