@@ -34,6 +34,7 @@ public class GameScreen extends Screen {
 		universe = new Universe();
 		
 		// set up widgets
+		final ButtonGroup rbg = new ButtonGroup();
 		final TextButton b1 = new TextButton("Small", skin);
 		b1.addListener(new ClickListener() {
 			@Override
@@ -55,7 +56,6 @@ public class GameScreen extends Screen {
 				universe.setParticleRadius(universe.maxRadius);
 			}
 		});
-		final ButtonGroup rbg = new ButtonGroup();
 
 		rbg.add(b1);
 		rbg.add(b2);
@@ -122,6 +122,7 @@ public class GameScreen extends Screen {
 		if (Gdx.input.isKeyPressed(Keys.MENU)) {
 			settingsDialog.show(stage);
 		}
+		System.out.println("FPS: "+Gdx.graphics.getFramesPerSecond());
 	}
 	@Override
 	public void resize(int width, int height) {

@@ -5,17 +5,21 @@ import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
+import com.kaeruct.glxy.data.ImageCache;
 import com.kaeruct.glxy.model.Particle;
 import com.kaeruct.glxy.model.Settings;
 import com.kaeruct.glxy.model.Settings.Setting;
@@ -28,7 +32,7 @@ public class Universe extends Actor {
 	final TrailParticleManager trailParticles;
 	final Vector3 initPos, touchPos, cinitPos, ctouchPos;
 	final CameraController controller;
-	final public GestureDetector gestureDetector;
+	public final GestureDetector gestureDetector;
 	public Settings settings;
 	boolean addedParticle;
 	public boolean panning;
@@ -40,6 +44,7 @@ public class Universe extends Actor {
 	final float sG = G * 0.5f; // multiplier for slingshot
 	final int maxTrails = 500; // max trails for a particle
 	private Rectangle bottomBar = null;
+	private final Texture texture;
 
 	private enum ParticleColor {
 		SMALL (5, 0.6f, 0.8f, 0.8f, 1.0f),
@@ -167,7 +172,9 @@ public class Universe extends Actor {
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
 
-		trailParticles = new TrailParticleManager(maxTrails);
+		texture = ImageCache.getTexture("circle").getTexture();
+		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		trailParticles = new TrailParticleManager(maxTrails, texture);
 		settings = s;
 	}
 	
@@ -176,7 +183,7 @@ public class Universe extends Actor {
 		camera.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
 	}
 
-	public Universe () {
+	public Universe() {
 		this(new Settings());
 	}
 
@@ -197,14 +204,19 @@ public class Universe extends Actor {
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		camera.update();
-		batch.end();
-
-		// fill background
-		sr.begin(ShapeType.FilledRectangle);
-		sr.setColor(0.05f, 0.05f, 0.05f, 1);
-		sr.filledRect(getX(), getY(), getWidth(), getHeight());
-		sr.end();
-
+	    
+	    // draw particles and trails
+		Matrix4 m4 = batch.getProjectionMatrix().cpy();
+		batch.setProjectionMatrix(camera.combined);
+	    renderParticles(batch);
+	    batch.end();
+	    
+	    // draw black bar on the bottom
+	    sr.begin(ShapeType.FilledRectangle);
+	    sr.setColor(0.05f, 0.05f, 0.05f, 1);
+	    sr.filledRect(0, 0, getWidth(), Gdx.graphics.getHeight()-getHeight());
+	    sr.end();
+	    
 	    if (!panning && protoParticle.dragged) {
 	    	// draw "slingshot" line
 	    	sr.begin(ShapeType.Line);
@@ -216,23 +228,12 @@ public class Universe extends Actor {
 					getY()+getHeight()-ctouchPos.y);
 			sr.end();
 	    }
-	    
-	    // draw particles and trails
-	    renderParticles();
-
-	    // draw black bar on the bottom
-	    sr.setProjectionMatrix(batch.getProjectionMatrix());
-	    sr.setTransformMatrix(batch.getTransformMatrix());
-	    sr.begin(ShapeType.FilledRectangle);
-	    sr.setColor(0.1f, 0.1f, 0.1f, 1);
-	    sr.filledRect(0, 0, getWidth(), Gdx.graphics.getHeight()-getHeight());
-	    sr.end();
+	    batch.setProjectionMatrix(m4);
 	    batch.begin();
 	}
 
 	public void manageInput() {
 		if (panning) return;
-
 
 		if (Gdx.input.isTouched(0) &&
 			!Gdx.input.isTouched(1) &&
@@ -330,9 +331,7 @@ public class Universe extends Actor {
 		}	
 	}
 
-	private void renderParticles() {
-		sr.begin(ShapeType.FilledCircle);
-	    sr.setProjectionMatrix(camera.combined);
+	private void renderParticles(SpriteBatch batch) {
 		for (Particle p : particles) {
 			Color c = ParticleColor.get(p.radius);
 			if (settings.get(Setting.TRAILS)) {
@@ -340,16 +339,14 @@ public class Universe extends Actor {
 					trailParticles.add(p.x, p.y, p.radius, c);
 				}
 			}
-
-			sr.setColor(c);
-			sr.filledCircle(p.x, p.y, p.radius);
+			batch.setColor(c);
+			batch.draw(texture,
+					p.x-p.radius, p.y-p.radius, p.radius*2, p.radius*2);
 	    }
 		
 		if (settings.get(Setting.TRAILS)) {
-			trailParticles.render(sr);
+			trailParticles.render(batch);
 		}
-		
-		sr.end();
 	}
 
 	private void addParticle() {
