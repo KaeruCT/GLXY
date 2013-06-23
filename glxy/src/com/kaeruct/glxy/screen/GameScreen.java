@@ -7,11 +7,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.kaeruct.glxy.GlxyGame;
@@ -31,16 +34,32 @@ public class GameScreen extends Screen {
 		universe = new Universe();
 		
 		// set up widgets
-		final Label l1 = new Label("Size: " + (int)universe.getParticleRadius(), skin);
-		
-		final Slider rSlider = new Slider(universe.minRadius, universe.maxRadius, universe.radiusStep, false, skin);
-		rSlider.addListener(new ChangeListener() {
+		final TextButton b1 = new TextButton("Small", skin);
+		b1.addListener(new ClickListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				universe.setParticleRadius(rSlider.getValue());
-				l1.setText("Size: " + (int)rSlider.getValue());
+			public void clicked(InputEvent event, float x, float y) {
+				universe.setParticleRadius(universe.minRadius);
 			}
 		});
+		final TextButton b2 = new TextButton("Medium", skin);
+		b2.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				universe.setParticleRadius(universe.minRadius + universe.maxRadius/4);
+			}
+		});
+		final TextButton b3 = new TextButton("Large", skin);
+		b3.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				universe.setParticleRadius(universe.maxRadius);
+			}
+		});
+		final ButtonGroup rbg = new ButtonGroup();
+
+		rbg.add(b1);
+		rbg.add(b2);
+		rbg.add(b3);
 		
 		final Label l2 = new Label("Count: "+universe.getParticleCount(), skin);
 		universe.addListener(new ChangeListener() {
@@ -69,25 +88,28 @@ public class GameScreen extends Screen {
 			}
 		});
 		
-		final CheckBox b1 = new CheckBox("Pan", skin);
-		b1.addListener(new ChangeListener() {
+		final CheckBox panCheckbox = new CheckBox("Pan", skin);
+		panCheckbox.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				universe.panning = b1.isChecked();
+				universe.panning = panCheckbox.isChecked();
 			}
 		});
-		b1.setChecked(true);
+		panCheckbox.setChecked(true);
 		b1.pad(padY, padX, padY, padX);
+		b2.pad(padY, padX, padY, padX);
+		b3.pad(padY, padX, padY, padX);
 		
 		// set up table layout
-		table.add(universe).expand().fill().colspan(5).row();
-		table.add(l2).pad(4);
-		table.add(l1).pad(4).fillX();
-		table.add(rSlider).right().pad(4).expandX();
-		table.add(b1).right().expandX().pad(4);
-		table.add(t4).right().pad(4);
+		table.add(universe).expand().fill().colspan(6).row();
+		table.add(l2).pad(4).fillX().expandX();
 		
-		rSlider.setValue(universe.getParticleRadius());
+		table.add(b1).left().pad(4);
+		table.add(b2).center().pad(4);
+		table.add(b3).right().pad(4);
+		
+		table.add(panCheckbox).right().expandX().pad(4);
+		table.add(t4).right().pad(4);
 		
 		// set up input
 		InputMultiplexer im = new InputMultiplexer(stage, universe.gestureDetector);
@@ -101,7 +123,11 @@ public class GameScreen extends Screen {
 			settingsDialog.show(stage);
 		}
 	}
-	
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		universe.resize();
+	}
 	@Override
 	public void dispose() {
 		universe.dispose();

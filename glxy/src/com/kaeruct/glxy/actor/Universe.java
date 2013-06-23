@@ -161,14 +161,19 @@ public class Universe extends Actor {
 		cinitPos = new Vector3();
 
 		protoParticle = (new Particle()).radius(minRadius);
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
+		camera = new OrthographicCamera();
+		resize();
+		
 		controller = new CameraController();
 		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
 
 		trailParticles = new TrailParticleManager(maxTrails);
-		
 		settings = s;
+	}
+	
+	public void resize() {
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
 	}
 
 	public Universe () {
@@ -326,12 +331,10 @@ public class Universe extends Actor {
 	}
 
 	private void renderParticles() {
-		Color c;
-
 		sr.begin(ShapeType.FilledCircle);
 	    sr.setProjectionMatrix(camera.combined);
 		for (Particle p : particles) {
-			c = ParticleColor.get(p.radius);
+			Color c = ParticleColor.get(p.radius);
 			if (settings.get(Setting.TRAILS)) {
 				if (Math.abs(p.x - p.oldx) > 0.2 || Math.abs(p.y - p.oldy) > 0.2) {
 					trailParticles.add(p.x, p.y, p.radius, c);
