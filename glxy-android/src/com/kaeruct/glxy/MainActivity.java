@@ -19,7 +19,7 @@ public class MainActivity extends AndroidApplication {
         WindowManager.LayoutParams attrs = getWindow().getAttributes();
         attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
         getWindow().setAttributes(attrs);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         
         if (Build.VERSION.SDK_INT >= 11) {
         	resetStatusBar();

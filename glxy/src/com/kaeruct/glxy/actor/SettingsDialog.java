@@ -20,7 +20,7 @@ public class SettingsDialog extends Dialog {
 	private final float padY;
 	
 	public SettingsDialog (final Universe universe, Skin skin, float padX, float padY) {
-		super("Settings", skin);
+		super("", skin);
 		this.universe = universe;
 		this.padX = padX;
 		this.padY = padY;

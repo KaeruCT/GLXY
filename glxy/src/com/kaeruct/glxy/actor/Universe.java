@@ -196,7 +196,7 @@ public class Universe extends Actor {
 
 		// fill background
 		sr.begin(ShapeType.FilledRectangle);
-		sr.setColor(0.1f, 0.1f, 0.2f, 1);
+		sr.setColor(0.05f, 0.05f, 0.05f, 1);
 		sr.filledRect(getX(), getY(), getWidth(), getHeight());
 		sr.end();
 
