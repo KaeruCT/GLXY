@@ -39,7 +39,7 @@ public class TrailParticleManager {
 			TrailParticle p = tpi.next();
 			
 			batch.setColor(p.color);
-			batch.draw(texture, p.x, p.y, p.radius*2, p.radius*2);
+			batch.draw(texture, p.x-p.radius, p.y-p.radius, p.radius*2, p.radius*2);
 			
 			p.shrink();
 			
