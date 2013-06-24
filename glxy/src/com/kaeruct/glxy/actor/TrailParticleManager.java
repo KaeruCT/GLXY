@@ -33,7 +33,7 @@ public class TrailParticleManager {
 		particles.add(0, p);
 	}
 	
-	public void render (SpriteBatch batch) {
+	public void render (SpriteBatch batch, boolean paused) {
 		Iterator<TrailParticle> tpi = particles.iterator();
 		while (tpi.hasNext()) {
 			TrailParticle p = tpi.next();
@@ -41,10 +41,12 @@ public class TrailParticleManager {
 			batch.setColor(p.color);
 			batch.draw(texture, p.x-p.radius, p.y-p.radius, p.radius*2, p.radius*2);
 			
-			p.shrink();
-			
-			if (p.radius <= 1) {
-				tpi.remove();
+			if (!paused) {
+				p.shrink();
+				
+				if (p.radius <= 1) {
+					tpi.remove();
+				}
 			}
 		}
 	}

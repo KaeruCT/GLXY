@@ -198,7 +198,9 @@ public class Universe extends Actor {
 	@Override
 	public void act(float delta) {
 	    manageInput();
-	    updateParticles();
+	    if (!settings.get(Setting.PAUSED)) {
+	    	updateParticles();
+	    }
 	}
 
 	@Override
@@ -334,7 +336,7 @@ public class Universe extends Actor {
 	private void renderParticles(SpriteBatch batch) {
 		for (Particle p : particles) {
 			Color c = ParticleColor.get(p.radius);
-			if (settings.get(Setting.TRAILS)) {
+			if (settings.get(Setting.TRAILS) && !settings.get(Setting.PAUSED)) {
 				if (Math.abs(p.x - p.oldx) > 0.2 || Math.abs(p.y - p.oldy) > 0.2) {
 					trailParticles.add(p.x, p.y, p.radius, c);
 				}
@@ -344,7 +346,7 @@ public class Universe extends Actor {
 	    }
 		
 		if (settings.get(Setting.TRAILS)) {
-			trailParticles.render(batch);
+			trailParticles.render(batch, settings.get(Setting.PAUSED));
 		}
 	}
 

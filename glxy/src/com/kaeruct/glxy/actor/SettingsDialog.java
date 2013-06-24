@@ -3,6 +3,7 @@ package com.kaeruct.glxy.actor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -25,11 +26,14 @@ public class SettingsDialog extends Dialog {
 		this.padX = padX;
 		this.padY = padY;
 		
+		final SettingsDialog dialog = this;
+		
 		setMovable(false);
 		// make the dialog at least this wide
 		getContentTable().add().width(Gdx.graphics.getWidth() * 0.5f).row();
 		
 		// add checkboxes
+		addCheckbox(Setting.PAUSED, skin);
 		addCheckbox(Setting.TRAILS, skin);
 		addCheckbox(Setting.COLLISION, skin);
 		
@@ -45,10 +49,15 @@ public class SettingsDialog extends Dialog {
 		add(resetButton);
 		
 		// add reset button
-		// TODO: find a way to align it right ...
 		final TextButton closeButton = new TextButton("Close", skin);
 		closeButton.pad(padY, padX, padY, padX);
-		button(closeButton);
+		closeButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				dialog.hide();
+			}
+		});
+		add(closeButton).right();
 	}
 	
 	private Cell<?> add(Button b) {

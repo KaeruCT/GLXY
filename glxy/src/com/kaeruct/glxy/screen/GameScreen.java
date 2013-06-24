@@ -53,7 +53,7 @@ public class GameScreen extends Screen {
 		b3.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				universe.setParticleRadius(universe.maxRadius);
+				universe.setParticleRadius(universe.minRadius + universe.maxRadius/2);
 			}
 		});
 
