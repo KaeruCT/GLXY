@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.ArrayMap;
 
 public class Settings extends ArrayMap<Settings.Setting, Boolean> {
 	public enum Setting {
-		TRAILS ("Sow Particle Trails", true),
+		TRAILS ("Show Particle Trails", true),
 		COLLISION ("Collide / Absorb", true),
 		PAUSED ("Paused", false);
 		
