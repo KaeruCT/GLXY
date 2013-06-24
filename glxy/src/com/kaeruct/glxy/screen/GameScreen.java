@@ -122,7 +122,6 @@ public class GameScreen extends Screen {
 		if (Gdx.input.isKeyPressed(Keys.MENU)) {
 			settingsDialog.show(stage);
 		}
-		System.out.println("FPS: "+Gdx.graphics.getFramesPerSecond());
 	}
 	@Override
 	public void resize(int width, int height) {

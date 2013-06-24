@@ -40,9 +40,9 @@ public class Universe extends Actor {
 	public final float minRadius = 5;
 	public final float maxRadius = 80;
 	public final float radiusStep = 5;
-	final float G = 0.09f; // gravity constant
+	final float G = 0.05f; // gravity constant
 	final float sG = G * 0.5f; // multiplier for slingshot
-	final int maxTrails = 500; // max trails for a particle
+	final int maxTrails = 500; // max trails for all particles
 	private Rectangle bottomBar = null;
 	private final Texture texture;
 
@@ -50,7 +50,7 @@ public class Universe extends Actor {
 		SMALL (5, 0.6f, 0.8f, 0.8f, 1.0f),
 		MEDIUM (35, 1.0f, 0.95f, 0.27f, 1.0f),
 		LARGE (70, 1.0f, 0.35f, 0.27f, 1.0f),
-		HUGE (100, 0.24f, 0.1f, 0.27f, 1.0f);
+		HUGE (100, 0.20f, 0.08f, 0.22f, 1.0f);
 
 		private final float cutoff; // the cutoff radius for this color
 		private final Color color;
@@ -126,7 +126,7 @@ public class Universe extends Actor {
 		@Override
 		public boolean pan (float x, float y, float deltaX, float deltaY) {
 			if (panning) {
-				camera.position.add(-deltaX * camera.zoom, deltaY * camera.zoom, 0);
+				camera.position.add(-deltaX * camera.zoom, -deltaY * camera.zoom, 0);
 			}
 
 			return false;
@@ -179,7 +179,7 @@ public class Universe extends Actor {
 	}
 	
 	public void resize() {
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(true, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, 0);
 	}
 
@@ -340,8 +340,7 @@ public class Universe extends Actor {
 				}
 			}
 			batch.setColor(c);
-			batch.draw(texture,
-					p.x-p.radius, p.y-p.radius, p.radius*2, p.radius*2);
+			batch.draw(texture, p.x-p.radius, p.y-p.radius, p.radius*2, p.radius*2);
 	    }
 		
 		if (settings.get(Setting.TRAILS)) {
