@@ -16,6 +16,10 @@ public class MainMenuScreen extends MenuScreen {
 	
 	public MainMenuScreen (GlxyGame gm) {
 		super(gm);
+		Texture logoTex = new Texture(Gdx.files.internal("data/glxy-logo.png"));
+		Image logo = new Image(logoTex);
+		logo.setScaling(Scaling.fit);
+		add(logo);
 		
 		TextButton t = new TextButton("Start!", skin);
 		t.addListener(new ClickListener() {
@@ -25,11 +29,6 @@ public class MainMenuScreen extends MenuScreen {
 		});
 		t.pad(5, 10, 5, 10);
 		add(t).expandY();
-
-		Texture logoTex = new Texture(Gdx.files.internal("data/glxy-logo.png"));
-		Image logo = new Image(logoTex);
-		logo.setScaling(Scaling.fit);
-		add(logo);
 
 		Label cpright = new Label("Copyright CHEKAE 2013 - All rights reserved", skin);
 		cpright.setAlignment(Align.center);
