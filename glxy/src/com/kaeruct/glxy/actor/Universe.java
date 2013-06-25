@@ -329,6 +329,7 @@ public class Universe extends Actor {
 			Particle p = it.next();
 			if (!p.update()) {
 				it.remove();
+				this.fire(new ChangeEvent());
 			}
 		}	
 	}
