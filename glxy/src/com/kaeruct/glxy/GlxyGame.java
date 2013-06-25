@@ -20,7 +20,6 @@ public class GlxyGame implements ApplicationListener {
 		Gdx.input.setCatchMenuKey(true);
         screens = new ArrayMap<String, Screen>();
         setScreen("MainMenuScreen");
-        ImageCache.load();
 	}
 
 	public void setScreen(String name) {

@@ -117,6 +117,11 @@ public class GameScreen extends Screen {
 	}
 	
 	@Override
+	public void resume() {
+		universe.resize();
+	}
+	
+	@Override
 	public void render(float delta) {
 		super.render(delta);
 		if (Gdx.input.isKeyPressed(Keys.MENU)) {

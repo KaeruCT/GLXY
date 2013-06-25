@@ -9,10 +9,7 @@ public class ImageCache {
     public static TextureAtlas atlas;  
       
     public static void load () {  
-    	if (atlas == null) {
-	        String textureFile = "data/textures.txt";  
-	        atlas = new TextureAtlas(Gdx.files.internal(textureFile), Gdx.files.internal("data"));
-    	}
+    	atlas = new TextureAtlas(Gdx.files.internal("data/textures.txt"), Gdx.files.internal("data"));
     }  
       
     public static TextureRegion getTexture (String name) {  
