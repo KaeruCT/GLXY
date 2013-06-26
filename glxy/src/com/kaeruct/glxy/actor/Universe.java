@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 import com.kaeruct.glxy.data.ImageCache;
 import com.kaeruct.glxy.model.Particle;
 import com.kaeruct.glxy.model.Settings;
+import com.kaeruct.glxy.model.StickyParticle;
 import com.kaeruct.glxy.model.Settings.Setting;
 
 public class Universe extends Actor {
@@ -35,6 +36,7 @@ public class Universe extends Actor {
 	public final GestureDetector gestureDetector;
 	public Settings settings;
 	boolean addedParticle;
+	public boolean addSticky;
 	public boolean panning;
 
 	public final float minRadius = 5;
@@ -67,10 +69,14 @@ public class Universe extends Actor {
 			touchPos.set(x, y, 0);
 			initPos.set(0, 0, 0); // just to avoid instantiating a new vector
 			camera.unproject(touchPos);
-			protoParticle.dragged = false;
-			protoParticle.vel(initPos);
-			protoParticle.position(touchPos);
-			addParticle();
+			if (addSticky) {
+				addStickyParticle(touchPos);
+			} else {
+				protoParticle.dragged = false;
+				protoParticle.vel(initPos);
+				protoParticle.position(touchPos);
+				addParticle();
+			}
 			return true;
 		}
 
@@ -224,7 +230,7 @@ public class Universe extends Actor {
 		if (panning)
 			return;
 
-		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1)
+		if (!addSticky &&  Gdx.input.isTouched(0) && !Gdx.input.isTouched(1)
 				&& !Gdx.input.justTouched() && // only one finger is touching
 				!touchBottomBar(Gdx.input.getX(0), Gdx.input.getY(0))) { // not
 																			// touching
@@ -355,6 +361,16 @@ public class Universe extends Actor {
 		particles.add(p);
 		addedParticle = true;
 
+		fire(new ChangeEvent());
+	}
+	
+	private void addStickyParticle(Vector3 pos) {
+		StickyParticle p = new StickyParticle();
+		p.radius(protoParticle.radius);
+		p.position(pos);
+		particles.add(p);
+		addedParticle = true;
+		
 		fire(new ChangeEvent());
 	}
 

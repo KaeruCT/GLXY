@@ -96,6 +96,15 @@ public class GameScreen extends Screen {
 			}
 		});
 		panCheckbox.setChecked(true);
+		
+		final CheckBox stickyCheckbox = new CheckBox(" Sticky", skin);
+		stickyCheckbox.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				universe.addSticky = stickyCheckbox.isChecked();
+			}
+		});
+
 		b1.pad(padY, padX, padY, padX);
 		b2.pad(padY, padX, padY, padX);
 		b3.pad(padY, padX, padY, padX);
@@ -106,7 +115,8 @@ public class GameScreen extends Screen {
 		
 		table.add(b1).left().pad(4);
 		table.add(b2).center().pad(4);
-		table.add(b3).right().pad(4);
+		table.add(b3).right().pad(4);		
+		table.add(stickyCheckbox).pad(4);
 		
 		table.add(panCheckbox).right().expandX().pad(4);
 		table.add(t4).right().pad(4);
@@ -114,11 +124,6 @@ public class GameScreen extends Screen {
 		// set up input
 		InputMultiplexer im = new InputMultiplexer(stage, universe.gestureDetector);
 		Gdx.input.setInputProcessor(im);
-	}
-	
-	@Override
-	public void resume() {
-		universe.resize();
 	}
 	
 	@Override
