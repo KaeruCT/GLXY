@@ -52,6 +52,7 @@ public class Universe extends Actor {
 		float velX, velY;
 		boolean flinging = false;
 		float initialScale = 1;
+		float px, py;
 
 		public boolean touchDown(float x, float y, int pointer, int button) {
 			flinging = false;
@@ -61,8 +62,7 @@ public class Universe extends Actor {
 
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
-			if (touchBottomBar(x, y))
-				return true;
+			if (touchBottomBar(x, y)) return true;
 
 			touchPos.set(x, y, 0);
 			initPos.set(0, 0, 0); // just to avoid instantiating a new vector
@@ -103,7 +103,14 @@ public class Universe extends Actor {
 			float z = initialScale * ratio;
 			
 			if (z <= maxZoom && z >= minZoom) {
-				camera.zoom = z;
+				
+				float zx = (px -getWidth()/2) * (camera.zoom - z),
+					  zy = (py - getHeight()/2) * (camera.zoom - z);
+				System.out.println(zx+", "+zy);
+		        camera.translate(zx, zy);
+		        px = zx;
+		        py = zy;
+		        camera.zoom = z;
 			}
 			return false;
 		}
@@ -112,6 +119,9 @@ public class Universe extends Actor {
 		public boolean pinch(Vector2 initialFirstPointer,
 				Vector2 initialSecondPointer, Vector2 firstPointer,
 				Vector2 secondPointer) {
+			
+			px = (initialFirstPointer.x + initialSecondPointer.x) / 2;
+			py = (initialFirstPointer.y + initialSecondPointer.y) / 2;
 			return false;
 		}
 
