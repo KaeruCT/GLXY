@@ -111,7 +111,7 @@ public class GameScreen extends Screen {
 		b3.pad(padY, padX, padY, padX);
 		
 		// set up table layout
-		table.add(universe).expand().fill().colspan(6).row();
+		table.add(universe).expand().fill().colspan(7).row();
 		table.add(l2).pad(4).fillX().expandX();
 		
 		table.add(b1).left().pad(4);

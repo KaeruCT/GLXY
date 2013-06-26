@@ -92,6 +92,11 @@ public class Particle extends Circle {
 		dead = false;
 	}
 	
+	public void inc(float x, float y) {
+		this.x += x;
+		this.y += y;
+	}
+	
 	// returns whether the particle is still alive
 	public boolean update() {
 		oldx = x;

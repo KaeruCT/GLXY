@@ -287,12 +287,11 @@ public class Universe extends Actor {
 					// collision
 					if (settings.get(Setting.COLLISION)) {
 						float mtd = 2 * (p.radius + p2.radius - d) / d;
-						p2.x += dx * mtd / p2.radius;
-						p2.y += dy * mtd / p2.radius;
-						p.x -= dx * mtd / p.radius;
-						p.y -= dy * mtd / p.radius;
+						p2.inc(dx * mtd / p2.radius, dy * mtd / p2.radius);
 						p2.dx += dx * mtd / p2.mass;
 						p2.dy += dy * mtd / p2.mass;
+
+						p.inc(dx * mtd / p.radius, dy * mtd / p.radius);
 						p.dx -= dx * mtd / p.mass;
 						p.dy -= dy * mtd / p.mass;
 					} else {

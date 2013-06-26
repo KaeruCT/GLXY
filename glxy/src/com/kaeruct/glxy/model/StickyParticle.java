@@ -5,4 +5,9 @@ public class StickyParticle extends Particle {
 	public boolean update() {
 		return !dead;
 	}
+	
+	@Override
+	public void inc (float x, float y) {
+		// do nothing
+	}
 }
