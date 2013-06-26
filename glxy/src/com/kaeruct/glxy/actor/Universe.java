@@ -103,10 +103,9 @@ public class Universe extends Actor {
 			float z = initialScale * ratio;
 			
 			if (z <= maxZoom && z >= minZoom) {
-				
 				float zx = (px -getWidth()/2) * (camera.zoom - z),
 					  zy = (py - getHeight()/2) * (camera.zoom - z);
-				System.out.println(zx+", "+zy);
+				
 		        camera.translate(zx, zy);
 		        px = zx;
 		        py = zy;
@@ -175,10 +174,6 @@ public class Universe extends Actor {
 		this(new Settings());
 	}
 
-	public float getParticleRadius() {
-		return protoParticle.radius;
-	}
-
 	public void setParticleRadius(float r) {
 		protoParticle.radius = r;
 	}
@@ -224,15 +219,8 @@ public class Universe extends Actor {
 		if (panning)
 			return;
 
-		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1)
-				&& !Gdx.input.justTouched() && // only one finger is touching
-				!touchBottomBar(Gdx.input.getX(0), Gdx.input.getY(0))) { // not
-																			// touching
-																			// the
-																			// bar
-																			// at
-																			// the
-																			// bottom
+		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1) && !Gdx.input.justTouched() && // only one finger is touching
+				!touchBottomBar(Gdx.input.getX(0), Gdx.input.getY(0))) { // not touching the bar at the bottom
 
 			touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
 			ctouchPos.set(touchPos);
