@@ -19,6 +19,6 @@ public class TrailParticle extends Circle {
 	}
 
 	public void shrink() {
-		radius -=  rsqrt * 0.2f;
+		radius -= rsqrt * 0.2f;
 	}
 }

@@ -37,8 +37,21 @@ public class SettingsDialog extends Dialog {
 		addCheckbox(Setting.TRAILS, skin);
 		addCheckbox(Setting.COLLISION, skin);
 		
+		final Table buttonTable = new Table();
+		
+		// add reset zoom button
+		final TextButton resetZoomButton = new TextButton("Reset Zoom", skin);
+		resetZoomButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				universe.resetZoom();
+			}
+		});
+		resetZoomButton.pad(padY, padX, padY, padX);
+		buttonTable.add(resetZoomButton).pad(padY, padX, padY, padX);
+		
 		// add reset button
-		final TextButton resetButton = new TextButton("Reset", skin);
+		final TextButton resetButton = new TextButton("Reset Particles", skin);
 		resetButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -46,9 +59,12 @@ public class SettingsDialog extends Dialog {
 			}
 		});
 		resetButton.pad(padY, padX, padY, padX);
-		add(resetButton);
+		buttonTable.add(resetButton).pad(padY, padX, padY, padX);
 		
-		// add reset button
+		getContentTable().row();
+		getContentTable().add(buttonTable);
+		
+		// add close button
 		final TextButton closeButton = new TextButton("Close", skin);
 		closeButton.pad(padY, padX, padY, padX);
 		closeButton.addListener(new ClickListener() {

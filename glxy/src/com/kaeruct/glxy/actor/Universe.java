@@ -40,6 +40,8 @@ public class Universe extends Actor {
 	public final float minRadius = 5;
 	public final float maxRadius = 80;
 	public final float radiusStep = 5;
+	public final float minZoom = 0.1f;
+	public final float maxZoom = 16;
 	final float G = 0.05f; // gravity constant
 	final float sG = G * 0.5f; // multiplier for slingshot
 	final int maxTrails = 500; // max trails for all particles
@@ -98,7 +100,11 @@ public class Universe extends Actor {
 		@Override
 		public boolean zoom(float originalDistance, float currentDistance) {
 			float ratio = originalDistance / currentDistance;
-			camera.zoom = initialScale * ratio;
+			float z = initialScale * ratio;
+			
+			if (z <= maxZoom && z >= minZoom) {
+				camera.zoom = z;
+			}
 			return false;
 		}
 
@@ -359,5 +365,9 @@ public class Universe extends Actor {
 
 	public void dispose() {
 		sr.dispose();
+	}
+
+	public void resetZoom() {
+		camera.zoom = 1;
 	}
 }
