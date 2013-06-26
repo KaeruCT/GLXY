@@ -61,11 +61,12 @@ public class GameScreen extends Screen {
 		rbg.add(b2);
 		rbg.add(b3);
 		
-		final Label l2 = new Label("Count: "+universe.getParticleCount(), skin);
+		final Label l2 = new Label("Count: 000", skin);
 		universe.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				l2.setText("Count: "+universe.getParticleCount());
+				String c = String.format("%3s", universe.getParticleCount()+"").replace(' ', '0');
+				l2.setText("Count: "+c);
 			}
 		});
 		
