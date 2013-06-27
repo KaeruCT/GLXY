@@ -89,22 +89,27 @@ public class GameScreen extends Screen {
 			}
 		});
 		
-		final CheckBox panCheckbox = new CheckBox("Pan", skin);
-		panCheckbox.addListener(new ChangeListener() {
+		final TextButton panButton = new TextButton("Pan", skin, "toggle");
+		panButton.addListener(new ClickListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				universe.panning = panCheckbox.isChecked();
+			public void clicked(InputEvent event, float x, float y) {
+				//panButton.toggle();
+				System.out.println(panButton.isChecked());
+				universe.panning = panButton.isChecked();
 			}
 		});
-		panCheckbox.setChecked(true);
+		panButton.pad(padY, padX, padY, padX);
+		panButton.setChecked(true);
 		
-		final CheckBox stickyCheckbox = new CheckBox(" Sticky", skin);
-		stickyCheckbox.addListener(new ChangeListener() {
+		final TextButton stickyButton = new TextButton("Sticky", skin, "toggle");
+		stickyButton.addListener(new ClickListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				universe.addSticky = stickyCheckbox.isChecked();
+			public void clicked(InputEvent event, float x, float y) {
+				//stickyButton.toggle();
+				universe.addSticky = stickyButton.isChecked();
 			}
 		});
+		stickyButton.pad(padY, padX, padY, padX);
 
 		b1.pad(padY, padX, padY, padX);
 		b2.pad(padY, padX, padY, padX);
@@ -117,9 +122,9 @@ public class GameScreen extends Screen {
 		table.add(b1).left().pad(4);
 		table.add(b2).center().pad(4);
 		table.add(b3).right().pad(4);		
-		table.add(stickyCheckbox).pad(4);
+		table.add(stickyButton).pad(4);
 		
-		table.add(panCheckbox).right().expandX().pad(4);
+		table.add(panButton).right().expandX().pad(4);
 		table.add(t4).right().pad(4);
 		
 		// set up input
