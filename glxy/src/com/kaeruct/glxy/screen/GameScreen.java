@@ -35,21 +35,21 @@ public class GameScreen extends Screen {
 		
 		// set up widgets
 		final ButtonGroup rbg = new ButtonGroup();
-		final TextButton b1 = new TextButton("Small", skin);
+		final TextButton b1 = new TextButton("Small", skin, "toggle");
 		b1.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				universe.setParticleRadius(universe.minRadius);
 			}
 		});
-		final TextButton b2 = new TextButton("Medium", skin);
+		final TextButton b2 = new TextButton("Medium", skin, "toggle");
 		b2.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				universe.setParticleRadius(universe.minRadius + universe.maxRadius/4);
 			}
 		});
-		final TextButton b3 = new TextButton("Large", skin);
+		final TextButton b3 = new TextButton("Large", skin, "toggle");
 		b3.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
