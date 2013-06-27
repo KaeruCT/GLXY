@@ -58,7 +58,7 @@ public class Universe extends Actor {
 	
 	final ShaderProgram shader = ImmediateModeRenderer20.createDefaultShader(false, true, 0);
 	final Mesh trail = new Mesh(false, 99, 99, 
-            new VertexAttribute(Usage.Position, 4, "a_position"));
+            new VertexAttribute(Usage.Position, 3, "a_position"));
 
 	class CameraController implements GestureListener {
 		float velX, velY;
@@ -353,12 +353,11 @@ public class Universe extends Actor {
 				batch.end();
 
 				Vector2 p1, p2; 
-				float[] vertices = new float[(2 + (p.pastPoints.length - 2) * 2) * 4];
+				float[] vertices = new float[(2 + (p.pastPoints.length - 2) * 2) * 3];
 				int n = 0;
 				vertices[n++] = p.x;
 				vertices[n++] = p.y;
 				vertices[n++] = 0;
-				vertices[n++] = Color.toFloatBits(1, 1, 1, 1);
 				
 				for (int i = 1; i < p.pastPoints.length - 1; i++) {
 					float thickness = p.radius*2;
@@ -373,13 +372,11 @@ public class Universe extends Actor {
 					vertices[n++] = p1.x;
 					vertices[n++] = p1.y;
 					vertices[n++] = 0;
-					vertices[n++] = Color.toFloatBits(1, 1, 1, 1);
 					
-					p1 = p1.sub(tmp).sub(tmp);
+					p1 = p1.sub(tmp);
 					vertices[n++] = p1.x;
 					vertices[n++] = p1.y;
 					vertices[n++] = 0;
-					vertices[n++] = Color.toFloatBits(1, 1, 1, 1);
 				}
 				p1 = p.pastPoints[p.pastPoints.length-1];
 				vertices[n++] = p1.x;
@@ -389,6 +386,7 @@ public class Universe extends Actor {
 				trail.setVertices(vertices);
 				//trail.setIndices(new short[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17});
 
+				trail.transform(camera.combined);
 				trail.render(shader, GL20.GL_TRIANGLE_STRIP);
 				batch.begin();
 			}
