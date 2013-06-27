@@ -33,9 +33,9 @@ public class SettingsDialog extends Dialog {
 		getContentTable().add().width(Gdx.graphics.getWidth() * 0.5f).row();
 		
 		// add checkboxes
-		addCheckbox(Setting.PAUSED, skin);
-		addCheckbox(Setting.TRAILS, skin);
-		addCheckbox(Setting.COLLISION, skin);
+		addButton(Setting.PAUSED, skin);
+		addButton(Setting.TRAILS, skin);
+		addButton(Setting.COLLISION, skin);
 		
 		final Table buttonTable = new Table();
 		
@@ -95,5 +95,19 @@ public class SettingsDialog extends Dialog {
 		checkbox.setChecked(universe.settings.get(setting));
 		
 		add(checkbox);
+	}
+	
+	public void addButton(final Setting setting, Skin skin) {
+		final TextButton button = new TextButton(setting.description, skin, "toggle");
+		button.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {	
+				universe.settings.put(setting, button.isChecked());
+			}
+		});
+		button.pad(padY, padX, padY, padX);
+		
+		button.setChecked(universe.settings.get(setting));
+		add(button);
 	}
 }
