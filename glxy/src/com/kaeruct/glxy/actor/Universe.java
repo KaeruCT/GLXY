@@ -4,10 +4,16 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
@@ -49,6 +55,10 @@ public class Universe extends Actor {
 	final int maxTrails = 500; // max trails for all particles
 	private Rectangle bottomBar = null;
 	private Texture texture;
+	
+	final ShaderProgram shader = ImmediateModeRenderer20.createDefaultShader(false, true, 0);
+	final Mesh trail = new Mesh(false, 99, 99, 
+            new VertexAttribute(Usage.Position, 4, "a_position"));
 
 	class CameraController implements GestureListener {
 		float velX, velY;
@@ -326,6 +336,7 @@ public class Universe extends Actor {
 	}
 
 	private void renderParticles(SpriteBatch batch) {
+		Vector2 tmp = new Vector2();
 		for (Particle p : particles) {
 			if (settings.get(Setting.TRAILS) && !settings.get(Setting.PAUSED)) {
 				if (Math.abs(p.x - p.oldx) > 0.2
@@ -340,17 +351,45 @@ public class Universe extends Actor {
 			if (settings.get(Setting.TRAILS)) {
 				//trailParticles.render(batch, settings.get(Setting.PAUSED));
 				batch.end();
-				sr.begin(ShapeType.Line);
-				sr.setColor(1,1,1,1);
-				Vector2 p1, p2;
-				sr.line(p.x, getY() + getHeight() - p.y, p.pastPoints[0].x, getY() + getHeight() - p.pastPoints[0].y);
-				for (int i = 1; i < p.pastPoints.length; i++) {
+
+				Vector2 p1, p2; 
+				float[] vertices = new float[(2 + (p.pastPoints.length - 2) * 2) * 4];
+				int n = 0;
+				vertices[n++] = p.x;
+				vertices[n++] = p.y;
+				vertices[n++] = 0;
+				vertices[n++] = Color.toFloatBits(1, 1, 1, 1);
+				
+				for (int i = 1; i < p.pastPoints.length - 1; i++) {
+					float thickness = p.radius*2;
+					
 					p1 = p.pastPoints[i-1];
 					p2 = p.pastPoints[i];
-					sr.line(p1.x, getY() + getHeight() - p1.y, p2.x, getY() + getHeight() - p2.y);
+					tmp.set(p1).sub(p2).nor();
+					tmp.set(-tmp.y, tmp.x);
+					tmp.mul(thickness/2f);
+					
+					p1 = p1.add(tmp);
+					vertices[n++] = p1.x;
+					vertices[n++] = p1.y;
+					vertices[n++] = 0;
+					vertices[n++] = Color.toFloatBits(1, 1, 1, 1);
+					
+					p1 = p1.sub(tmp).sub(tmp);
+					vertices[n++] = p1.x;
+					vertices[n++] = p1.y;
+					vertices[n++] = 0;
+					vertices[n++] = Color.toFloatBits(1, 1, 1, 1);
 				}
-				sr.end();
+				p1 = p.pastPoints[p.pastPoints.length-1];
+				vertices[n++] = p1.x;
+				vertices[n++] = p1.y;
+				vertices[n++] = 0;
+				
+				trail.setVertices(vertices);
+				//trail.setIndices(new short[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17});
 
+				trail.render(shader, GL20.GL_TRIANGLE_STRIP);
 				batch.begin();
 			}
 		}

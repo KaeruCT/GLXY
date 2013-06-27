@@ -72,7 +72,7 @@ public class Particle extends Circle {
 	}
 	
 	private void initPastPoints() {
-		pastPoints = new Vector2[10];
+		pastPoints = new Vector2[20];
 		for (int i = 0; i < pastPoints.length; i ++) {
 			pastPoints[i] = new Vector2(x, y);
 		}
