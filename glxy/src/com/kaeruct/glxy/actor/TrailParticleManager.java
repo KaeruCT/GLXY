@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.kaeruct.glxy.data.ImageCache;
+import com.kaeruct.glxy.model.Particle;
 import com.kaeruct.glxy.model.TrailParticle;
 
 public class TrailParticleManager {
@@ -21,16 +22,19 @@ public class TrailParticleManager {
 		particles = new ArrayList<TrailParticle>(maxParticles);
 	}
 	
-	public void add (float x, float y, float radius, Color color) {
-		TrailParticle p;
-		int size = particles.size();
-		if (size == maxParticles) {
-			p = particles.remove(size - 1);
-			p.set(x, y, radius, color);
-		} else {
-			p = new TrailParticle(x, y, radius, color);
+	public void add (Particle particle) {
+		if (Math.abs(particle.x - particle.oldx) > 0.2
+						|| Math.abs(particle.y - particle.oldy) > 0.2) {
+			TrailParticle p;
+			int size = particles.size();
+			if (size == maxParticles) {
+				p = particles.remove(size - 1);
+				p.set(particle);
+			} else {
+				p = new TrailParticle(particle);
+			}
+			particles.add(0, p);
 		}
-		particles.add(0, p);
 	}
 	
 	public void render (SpriteBatch batch, boolean paused) {

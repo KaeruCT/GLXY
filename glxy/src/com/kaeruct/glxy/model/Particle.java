@@ -2,6 +2,7 @@ package com.kaeruct.glxy.model;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.kaeruct.glxy.model.Particle;
 
@@ -14,6 +15,7 @@ public class Particle extends Circle {
 	public boolean dead;
 	public boolean dragged;
 	public Color color;
+	public Vector2[] pastPoints;
 	
 	private enum ParticleColor {
 		SMALL(5, 0.6f, 0.8f, 0.8f, 1.0f), MEDIUM(35, 1.0f, 0.95f, 0.27f, 1.0f), LARGE(
@@ -56,6 +58,24 @@ public class Particle extends Circle {
 		dx = 0;
 		dy = 0;
 		dead = false;
+		initPastPoints();
+	}
+	
+	public Particle (Particle p2) {
+		this();
+		dx = p2.dx;
+		dy = p2.dy;
+		x = p2.x;
+		y = p2.y;
+		radius(p2.radius);
+		initPastPoints();
+	}
+	
+	private void initPastPoints() {
+		pastPoints = new Vector2[10];
+		for (int i = 0; i < pastPoints.length; i ++) {
+			pastPoints[i] = new Vector2(x, y);
+		}
 	}
 	
 	public Particle radius(float r) {
@@ -82,15 +102,6 @@ public class Particle extends Circle {
 		dy = d.y;
 		return this;
 	}
-
-	public Particle (Particle p2) {
-		dx = p2.dx;
-		dy = p2.dy;
-		x = p2.x;
-		y = p2.y;
-		radius(p2.radius);
-		dead = false;
-	}
 	
 	public void inc(float x, float y) {
 		this.x += x;
@@ -103,6 +114,7 @@ public class Particle extends Circle {
 		oldy = y;
 		x += dx;
 		y += dy;
+		updatePoints();
     	return !dead;
 	}
 	
@@ -115,5 +127,15 @@ public class Particle extends Circle {
 			  dy = p2.y - y;
 
 		return Math.pow(dx, 2) + Math.pow(dy, 2) < Math.pow(radius + p2.radius, 2);
+	}
+	
+	private void updatePoints()
+	{
+		if (Math.abs(pastPoints[0].x - oldx) > radius*2 || Math.abs(pastPoints[0].y - oldy) > radius*2) {
+			for (int i = 1; i < pastPoints.length; i++) {
+				pastPoints[i].set(pastPoints[i-1]);
+			}
+			pastPoints[0].set(oldx, oldy);
+		}
 	}
 }

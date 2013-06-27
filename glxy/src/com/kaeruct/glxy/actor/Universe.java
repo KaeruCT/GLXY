@@ -327,20 +327,32 @@ public class Universe extends Actor {
 
 	private void renderParticles(SpriteBatch batch) {
 		for (Particle p : particles) {
-			Color c = p.color;
 			if (settings.get(Setting.TRAILS) && !settings.get(Setting.PAUSED)) {
 				if (Math.abs(p.x - p.oldx) > 0.2
 						|| Math.abs(p.y - p.oldy) > 0.2) {
-					trailParticles.add(p.x, p.y, p.radius, c);
+					trailParticles.add(p);
 				}
 			}
-			batch.setColor(c);
+			batch.setColor(p.color);
 			batch.draw(texture, p.x - p.radius, p.y - p.radius, p.radius * 2,
 					p.radius * 2);
-		}
+			
+			if (settings.get(Setting.TRAILS)) {
+				//trailParticles.render(batch, settings.get(Setting.PAUSED));
+				batch.end();
+				sr.begin(ShapeType.Line);
+				sr.setColor(1,1,1,1);
+				Vector2 p1, p2;
+				sr.line(p.x, getY() + getHeight() - p.y, p.pastPoints[0].x, getY() + getHeight() - p.pastPoints[0].y);
+				for (int i = 1; i < p.pastPoints.length; i++) {
+					p1 = p.pastPoints[i-1];
+					p2 = p.pastPoints[i];
+					sr.line(p1.x, getY() + getHeight() - p1.y, p2.x, getY() + getHeight() - p2.y);
+				}
+				sr.end();
 
-		if (settings.get(Setting.TRAILS)) {
-			trailParticles.render(batch, settings.get(Setting.PAUSED));
+				batch.begin();
+			}
 		}
 	}
 

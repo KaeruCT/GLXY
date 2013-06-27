@@ -7,9 +7,15 @@ public class TrailParticle extends Circle {
 	public Color color;
 	private float rsqrt;
 	
-	public TrailParticle (float x, float y, float radius, Color color) {
-		super(x, y, radius);
-		this.color = color;
+	public TrailParticle (Particle p) {
+		set(p);
+	}
+	
+	public void set(Particle p) {
+		this.x = p.x;
+		this.y = p.y;
+		this.radius = p.radius;
+		this.color = p.color;
 		rsqrt = (float) Math.sqrt(radius);
 	}
 	
