@@ -94,7 +94,6 @@ public class GameScreen extends Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				//panButton.toggle();
-				System.out.println(panButton.isChecked());
 				universe.panning = panButton.isChecked();
 			}
 		});
