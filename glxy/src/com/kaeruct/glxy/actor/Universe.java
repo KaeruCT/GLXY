@@ -376,7 +376,7 @@ public class Universe extends Actor {
 					vertices[n++] = 0;
 					vertices[n++] = Color.toFloatBits(255, 0, 0, 255);
 					
-					p1 = p1.sub(tmp).sub(tmp);
+					p1 = p1.sub(tmp);
 					vertices[n++] = p1.x;
 					vertices[n++] = p1.y;
 					vertices[n++] = 0;
@@ -392,6 +392,7 @@ public class Universe extends Actor {
 				//trail.setIndices(new short[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17});
 
 				shader.begin();
+				trail.transform(camera.combined);
 				trail.render(shader, GL20.GL_TRIANGLE_STRIP);
 				shader.end();
 				batch.begin();
