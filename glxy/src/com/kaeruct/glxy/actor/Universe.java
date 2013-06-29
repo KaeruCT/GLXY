@@ -57,8 +57,9 @@ public class Universe extends Actor {
 	private Texture texture;
 	
 	final ShaderProgram shader = ImmediateModeRenderer20.createDefaultShader(false, true, 0);
-	final Mesh trail = new Mesh(false, 99, 99, 
-            new VertexAttribute(Usage.Position, 4, "a_position"));
+	final Mesh trail = new Mesh(true, 1024, 0, 
+            new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+            new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE));
 
 	class CameraController implements GestureListener {
 		float velX, velY;
@@ -351,14 +352,14 @@ public class Universe extends Actor {
 			if (settings.get(Setting.TRAILS)) {
 				//trailParticles.render(batch, settings.get(Setting.PAUSED));
 				batch.end();
-
+				
 				Vector2 p1, p2; 
 				float[] vertices = new float[(2 + (p.pastPoints.length - 2) * 2) * 4];
 				int n = 0;
 				vertices[n++] = p.x;
 				vertices[n++] = p.y;
 				vertices[n++] = 0;
-				vertices[n++] = Color.toFloatBits(1, 1, 1, 1);
+				vertices[n++] = Color.toFloatBits(255, 0, 0, 255);
 				
 				for (int i = 1; i < p.pastPoints.length - 1; i++) {
 					float thickness = p.radius*2;
@@ -373,23 +374,26 @@ public class Universe extends Actor {
 					vertices[n++] = p1.x;
 					vertices[n++] = p1.y;
 					vertices[n++] = 0;
-					vertices[n++] = Color.toFloatBits(1, 1, 1, 1);
+					vertices[n++] = Color.toFloatBits(255, 0, 0, 255);
 					
 					p1 = p1.sub(tmp).sub(tmp);
 					vertices[n++] = p1.x;
 					vertices[n++] = p1.y;
 					vertices[n++] = 0;
-					vertices[n++] = Color.toFloatBits(1, 1, 1, 1);
+					vertices[n++] = Color.toFloatBits(255, 0, 0, 255);
 				}
 				p1 = p.pastPoints[p.pastPoints.length-1];
 				vertices[n++] = p1.x;
 				vertices[n++] = p1.y;
 				vertices[n++] = 0;
+				vertices[n++] = Color.toFloatBits(255, 0, 0, 255);
 				
 				trail.setVertices(vertices);
 				//trail.setIndices(new short[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17});
 
+				shader.begin();
 				trail.render(shader, GL20.GL_TRIANGLE_STRIP);
+				shader.end();
 				batch.begin();
 			}
 		}
