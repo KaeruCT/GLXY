@@ -18,6 +18,7 @@ public class GlxyGame implements ApplicationListener {
 	public void create() {
 		Dialog.fadeDuration = 0.01f;
 		Gdx.input.setCatchMenuKey(true);
+		Gdx.input.setCatchBackKey(true);
         screens = new ArrayMap<String, Screen>();
         setScreen("MainMenuScreen");
 	}

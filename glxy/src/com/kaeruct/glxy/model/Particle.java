@@ -3,7 +3,6 @@ package com.kaeruct.glxy.model;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector3;
-import com.kaeruct.glxy.model.Particle;
 
 public class Particle extends Circle {
 	public float oldx;
@@ -14,7 +13,7 @@ public class Particle extends Circle {
 	public boolean dead;
 	public boolean dragged;
 	public Color color;
-	
+
 	private enum ParticleColor {
 		SMALL(5, 0.6f, 0.8f, 0.8f, 1.0f), MEDIUM(35, 1.0f, 0.95f, 0.27f, 1.0f), LARGE(
 				70, 1.0f, 0.35f, 0.27f, 1.0f), HUGE(120, 0.7f, 0.4f, 0.5f, 1.0f);
@@ -51,39 +50,39 @@ public class Particle extends Circle {
 			return HUGE.color;
 		}
 	}
-	
-	public Particle () {
+
+	public Particle() {
 		dx = 0;
 		dy = 0;
 		dead = false;
 	}
-	
+
 	public Particle radius(float r) {
 		radius = r;
 		mass = (float) (0.5 * Math.pow(r, 3));
 		color = ParticleColor.get(radius);
 		return this;
 	}
-	
+
 	public Particle position(Vector3 pos) {
 		x = pos.x;
 		y = pos.y;
 		return this;
 	}
-	
+
 	public Particle stop() {
 		dx = 0;
 		dy = 0;
 		return this;
 	}
-	
+
 	public Particle vel(Vector3 d) {
 		dx = d.x;
 		dy = d.y;
 		return this;
 	}
 
-	public Particle (Particle p2) {
+	public Particle(Particle p2) {
 		dx = p2.dx;
 		dy = p2.dy;
 		x = p2.x;
@@ -91,29 +90,29 @@ public class Particle extends Circle {
 		radius(p2.radius);
 		dead = false;
 	}
-	
+
 	public void inc(float x, float y) {
 		this.x += x;
 		this.y += y;
 	}
-	
+
 	// returns whether the particle is still alive
 	public boolean update() {
 		oldx = x;
 		oldy = y;
 		x += dx;
 		y += dy;
-    	return !dead;
+		return !dead;
 	}
-	
+
 	public void kill() {
 		dead = true;
 	}
-	
-	public boolean collidesWith(Particle p2) {
-		float dx = p2.x - x,
-			  dy = p2.y - y;
 
-		return Math.pow(dx, 2) + Math.pow(dy, 2) < Math.pow(radius + p2.radius, 2);
+	public boolean collidesWith(Particle p2) {
+		float dx = p2.x - x, dy = p2.y - y;
+
+		return Math.pow(dx, 2) + Math.pow(dy, 2) < Math.pow(radius + p2.radius,
+				2);
 	}
 }

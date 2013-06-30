@@ -1,5 +1,7 @@
 package com.kaeruct.glxy.actor;
 
+import javax.swing.GroupLayout.Alignment;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -7,9 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.esotericsoftware.tablelayout.Cell;
@@ -19,18 +23,22 @@ public class SettingsDialog extends Dialog {
 	private final Universe universe;
 	private final float padX;
 	private final float padY;
+	private boolean isShowing;
 	
 	public SettingsDialog (final Universe universe, Skin skin, float padX, float padY) {
-		super("", skin);
+		super("Options", skin);
 		this.universe = universe;
 		this.padX = padX;
 		this.padY = padY;
+		this.isShowing = false;
 		
 		final SettingsDialog dialog = this;
 		
 		setMovable(false);
-		// make the dialog at least this wide
-		getContentTable().add().width(Gdx.graphics.getWidth() * 0.5f).row();
+		
+		final Label toggleTitle = new Label("Toggleable", skin);
+		toggleTitle.setAlignment(Align.left);                                // make the dialog at least this wide
+		getContentTable().add(toggleTitle).left().pad(padY, padX, padY, padX).width(Gdx.graphics.getWidth() * 0.5f).row();
 		
 		// add checkboxes
 		addButton(Setting.PAUSED, skin);
@@ -48,7 +56,7 @@ public class SettingsDialog extends Dialog {
 			}
 		});
 		resetZoomButton.pad(padY, padX, padY, padX);
-		buttonTable.add(resetZoomButton).pad(padY, padX, padY, padX);
+		buttonTable.add(resetZoomButton).left();
 		
 		// add reset button
 		final TextButton resetButton = new TextButton("Reset Particles", skin);
@@ -59,10 +67,13 @@ public class SettingsDialog extends Dialog {
 			}
 		});
 		resetButton.pad(padY, padX, padY, padX);
-		buttonTable.add(resetButton).pad(padY, padX, padY, padX);
+		buttonTable.add(resetButton).pad(padY, padX, padY, padX).left();
 		
 		getContentTable().row();
-		getContentTable().add(buttonTable);
+		final Label buttonTitle = new Label("Reset", skin);
+		buttonTitle.setAlignment(Align.left);
+		getContentTable().add(buttonTitle).left().pad(padY, padX, padY, padX).row();
+		getContentTable().add(buttonTable).left();
 		
 		// add close button
 		final TextButton closeButton = new TextButton("Close", skin);
@@ -81,33 +92,36 @@ public class SettingsDialog extends Dialog {
 		content.row().pad(padY, padX, padY, padX);
 		return content.add(b).left();
 	}
-	
-	public void addCheckbox(final Setting setting, Skin skin) {
-		
-		final CheckBox checkbox = new CheckBox("  "+setting.description, skin);
-		checkbox.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				universe.settings.put(setting, ((CheckBox)actor).isChecked());
-			}
-		});
-		
-		checkbox.setChecked(universe.settings.get(setting));
-		
-		add(checkbox);
-	}
-	
+
 	public void addButton(final Setting setting, Skin skin) {
-		final TextButton button = new TextButton(setting.description, skin, "toggle");
+		final TextButton button = new TextButton(universe.settings.getDescription(setting), skin, "toggle");
 		button.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {	
 				universe.settings.put(setting, button.isChecked());
+				button.setText(universe.settings.getDescription(setting));
 			}
 		});
 		button.pad(padY, padX, padY, padX);
 		
 		button.setChecked(universe.settings.get(setting));
 		add(button);
+	}
+	
+	@Override
+	public Dialog show(Stage stage) {
+		super.show(stage);
+		this.isShowing = true;
+		return this;
+	}
+	
+	@Override
+	public void hide() {
+		super.hide();
+		this.isShowing = false;
+	}
+	
+	public boolean isShowing() {
+		return isShowing;
 	}
 }

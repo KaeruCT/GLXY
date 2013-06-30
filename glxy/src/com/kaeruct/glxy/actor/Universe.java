@@ -146,7 +146,7 @@ public class Universe extends Actor {
 
 	public Universe(Settings s) {
 		addedParticle = true;
-		panning = false;
+		panning = true;
 		particles = new Array<Particle>();
 		sr = new ShapeRenderer();
 		touchPos = new Vector3();
@@ -280,13 +280,12 @@ public class Universe extends Actor {
 				float dx = p2.x - p.x;
 				float dy = p2.y - p.y;
 				float d = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-				if (d == 0)
-					d = 1;
+				if (d == 0) d = 1;
 
 				if (p.collidesWith(p2)) {
 					// collision
 					if (settings.get(Setting.COLLISION)) {
-						float mtd = 2 * (p.radius + p2.radius - d) / d;
+						float mtd = 4 * (p.radius + p2.radius - d) / d;
 						p2.inc(dx * mtd / p2.radius, dy * mtd / p2.radius);
 						p2.dx += dx * mtd / p2.mass;
 						p2.dy += dy * mtd / p2.mass;
@@ -294,6 +293,7 @@ public class Universe extends Actor {
 						p.inc(dx * mtd / p.radius, dy * mtd / p.radius);
 						p.dx -= dx * mtd / p.mass;
 						p.dy -= dy * mtd / p.mass;
+
 					} else {
 						if (p.radius > p2.radius) {
 							p.radius((float)(p.radius + Math.sqrt(p2.radius / 2)));
@@ -348,7 +348,7 @@ public class Universe extends Actor {
 		Particle p = new Particle(protoParticle);
 		particles.add(p);
 		addedParticle = true;
-
+		
 		fire(new ChangeEvent());
 	}
 	
@@ -359,6 +359,7 @@ public class Universe extends Actor {
 		particles.add(p);
 		addedParticle = true;
 		
+		addSticky = false;
 		fire(new ChangeEvent());
 	}
 

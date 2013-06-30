@@ -8,13 +8,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.kaeruct.glxy.GlxyGame;
@@ -28,8 +25,8 @@ public class GameScreen extends Screen {
 	
 	public GameScreen (GlxyGame gg) {
 		super(gg);
-		final int padX = 20;
-		final int padY = 10;
+		final int padX = 10;
+		final int padY = 5;
 		
 		universe = new Universe();
 		
@@ -93,19 +90,23 @@ public class GameScreen extends Screen {
 		panButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				//panButton.toggle();
 				universe.panning = panButton.isChecked();
 			}
 		});
 		panButton.pad(padY, padX, padY, padX);
-		panButton.setChecked(true);
+		panButton.setChecked(universe.panning);
 		
 		final TextButton stickyButton = new TextButton("Sticky", skin, "toggle");
 		stickyButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				//stickyButton.toggle();
 				universe.addSticky = stickyButton.isChecked();
+			}
+		});
+		universe.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				stickyButton.setChecked(universe.addSticky);
 			}
 		});
 		stickyButton.pad(padY, padX, padY, padX);
@@ -121,9 +122,9 @@ public class GameScreen extends Screen {
 		table.add(b1).left().pad(4);
 		table.add(b2).center().pad(4);
 		table.add(b3).right().pad(4);		
-		table.add(stickyButton).pad(4);
+		table.add(stickyButton).right().expandX().pad(4);
 		
-		table.add(panButton).right().expandX().pad(4);
+		table.add(panButton).right().pad(4);
 		table.add(t4).right().pad(4);
 		
 		// set up input
@@ -136,6 +137,13 @@ public class GameScreen extends Screen {
 		super.render(delta);
 		if (Gdx.input.isKeyPressed(Keys.MENU)) {
 			settingsDialog.show(stage);
+		}
+		if (Gdx.input.isKeyPressed(Keys.BACK)) {
+			if (settingsDialog.isShowing()) {
+				settingsDialog.hide();
+			} else {
+				game.setScreen("MainMenuScreen");
+			}
 		}
 	}
 	@Override
