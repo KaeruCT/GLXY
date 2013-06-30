@@ -1,7 +1,13 @@
 package com.kaeruct.glxy.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -12,6 +18,8 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
 	protected GlxyGame game;
 	protected Table table;
 	protected Skin skin;
+	protected boolean backJustPressed;
+	protected boolean menuJustPressed;
 
 	public Screen (GlxyGame gm) {
 		game = gm;
@@ -24,8 +32,19 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
         stage.addActor(table);
 		
 		Gdx.input.setInputProcessor(stage);
+		stage.addListener(new InputListener() {
+			@Override
+			public boolean keyUp(InputEvent event, int keycode) {
+				onKeyUp(keycode);
+				return false;
+			}
+		});
 	}
 
+	public void onKeyUp(int keycode) {
+		// do something
+	}
+	
 	@Override
 	public void render (float delta) {
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);

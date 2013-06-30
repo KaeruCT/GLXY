@@ -26,6 +26,7 @@ public class GlxyGame implements ApplicationListener {
 	public void setScreen(String name) {
 		Screen newScreen = null;
 		name = "com.kaeruct.glxy.screen." + name;  
+		if (screen != null) screen.hide();
 		
 		if (!screens.containsKey(name)) {
 			try {
@@ -40,6 +41,7 @@ public class GlxyGame implements ApplicationListener {
 			newScreen = screens.get(name);
 		}
 		screen = newScreen;
+		screen.show();
 	}
 
 	@Override

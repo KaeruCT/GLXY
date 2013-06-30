@@ -1,6 +1,8 @@
 package com.kaeruct.glxy.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -13,10 +15,11 @@ import com.badlogic.gdx.utils.Scaling;
 import com.kaeruct.glxy.GlxyGame;
 
 public class MainMenuScreen extends MenuScreen {
+	private final Texture logoTex;
 	
 	public MainMenuScreen (GlxyGame gm) {
 		super(gm);
-		Texture logoTex = new Texture(Gdx.files.internal("data/glxy-logo.png"));
+		logoTex = new Texture(Gdx.files.internal("data/glxy-logo.png"));
 		Image logo = new Image(logoTex);
 		logo.setScaling(Scaling.fit);
 		add(logo);
@@ -35,10 +38,25 @@ public class MainMenuScreen extends MenuScreen {
 		cpright.setColor(1f, 1f, .8f, 1f);
 		add(cpright).pad(10);
 	}
-
+	
 	@Override
-	public void render (float delta) {
-		super.render(delta);
-		Table.drawDebug(stage);
+	public void show() {
+		// set up input
+		InputMultiplexer im = new InputMultiplexer(stage);
+		Gdx.input.setInputProcessor(im);
+	}
+	
+	@Override
+	public void dispose() {
+		logoTex.dispose();
+	}
+	
+	@Override
+	public void onKeyUp(int keycode) {
+		System.out.println(keycode == Keys.BACK);
+		if (keycode == Keys.BACK) {
+			System.out.println("Exiting...");
+			Gdx.app.exit();
+		}
 	}
 }

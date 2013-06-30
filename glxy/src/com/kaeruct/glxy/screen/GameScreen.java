@@ -22,15 +22,23 @@ import com.kaeruct.glxy.model.Settings.Setting;
 public class GameScreen extends Screen {
 	private final Universe universe;
 	private final SettingsDialog settingsDialog;
+	private final Texture settingsTexture;
+	final int padX = 15;
+	final int padY = 8;
 	
 	public GameScreen (GlxyGame gg) {
 		super(gg);
-		final int padX = 10;
-		final int padY = 5;
-		
 		universe = new Universe();
-		
-		// set up widgets
+		settingsTexture = new Texture(Gdx.files.internal("data/gear.png"));
+		settingsDialog = new SettingsDialog(universe, skin, padX, padY);
+		settingsDialog.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (!universe.settings.get(Setting.TRAILS)) {
+					universe.clearTrails();
+				}
+			}
+		});
 		final ButtonGroup rbg = new ButtonGroup();
 		final TextButton b1 = new TextButton("Small", skin, "toggle");
 		b1.addListener(new ClickListener() {
@@ -67,16 +75,6 @@ public class GameScreen extends Screen {
 			}
 		});
 		
-		settingsDialog = new SettingsDialog(universe, skin, padX, padY);
-		settingsDialog.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				if (!universe.settings.get(Setting.TRAILS)) {
-					universe.clearTrails();
-				}
-			}
-		});
-		final Texture settingsTexture = new Texture(Gdx.files.internal("data/gear.png"));
 		final TextureRegion settingsImage = new TextureRegion(settingsTexture); 
 		final ImageButton t4 = new ImageButton(new TextureRegionDrawable(settingsImage));
 		t4.addListener(new ClickListener() {
@@ -126,26 +124,15 @@ public class GameScreen extends Screen {
 		
 		table.add(panButton).right().pad(4);
 		table.add(t4).right().pad(4);
-		
+	}
+	
+	@Override
+	public void show() {
 		// set up input
 		InputMultiplexer im = new InputMultiplexer(stage, universe.gestureDetector);
 		Gdx.input.setInputProcessor(im);
 	}
-	
-	@Override
-	public void render(float delta) {
-		super.render(delta);
-		if (Gdx.input.isKeyPressed(Keys.MENU)) {
-			settingsDialog.show(stage);
-		}
-		if (Gdx.input.isKeyPressed(Keys.BACK)) {
-			if (settingsDialog.isShowing()) {
-				settingsDialog.hide();
-			} else {
-				game.setScreen("MainMenuScreen");
-			}
-		}
-	}
+
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
@@ -154,5 +141,24 @@ public class GameScreen extends Screen {
 	@Override
 	public void dispose() {
 		universe.dispose();
+		settingsTexture.dispose();
+	}
+	@Override
+	public void onKeyUp (int keycode) {
+		if (keycode == Keys.MENU) {
+			if (settingsDialog.isShowing()) {
+				settingsDialog.hide();
+			} else {
+				settingsDialog.show(stage);
+			}
+		}
+		
+		if (keycode == Keys.BACK) {
+			if (settingsDialog.isShowing()) {
+				settingsDialog.hide();
+			} else {
+				game.setScreen("MainMenuScreen");
+			}
+		}
 	}
 }

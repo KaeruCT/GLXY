@@ -73,7 +73,7 @@ public class SettingsDialog extends Dialog {
 		final Label buttonTitle = new Label("Reset", skin);
 		buttonTitle.setAlignment(Align.left);
 		getContentTable().add(buttonTitle).left().pad(padY, padX, padY, padX).row();
-		getContentTable().add(buttonTable).left();
+		getContentTable().add(buttonTable).left().pad(padY, padX, padY, padX);
 		
 		// add close button
 		final TextButton closeButton = new TextButton("Close", skin);
