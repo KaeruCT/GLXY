@@ -53,9 +53,7 @@ public class MainMenuScreen extends MenuScreen {
 	
 	@Override
 	public void onKeyUp(int keycode) {
-		System.out.println(keycode == Keys.BACK);
 		if (keycode == Keys.BACK) {
-			System.out.println("Exiting...");
 			Gdx.app.exit();
 		}
 	}
