@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.kaeruct.glxy.data.ImageCache;
 import com.kaeruct.glxy.model.Particle;
 import com.kaeruct.glxy.model.Settings;
@@ -34,6 +36,9 @@ public class Universe extends Actor {
 	final Vector3 initPos, touchPos, cinitPos, ctouchPos;
 	final CameraController controller;
 	public final GestureDetector gestureDetector;
+	
+	private Particle followedParticle;
+	
 	public Settings settings;
 	boolean addedParticle;
 	public boolean addSticky;
@@ -51,6 +56,7 @@ public class Universe extends Actor {
 	private Texture texture;
 
 	class CameraController implements GestureListener {
+		Timer.Task singleTapTask;
 		float velX, velY;
 		boolean flinging = false;
 		float initialScale = 1;
@@ -64,18 +70,47 @@ public class Universe extends Actor {
 
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
-			if (touchBottomBar(x, y)) return true;
-
-			touchPos.set(x, y, 0);
-			initPos.set(0, 0, 0); // just to avoid instantiating a new vector
-			camera.unproject(touchPos);
-			if (addSticky) {
-				addStickyParticle(touchPos);
-			} else {
-				protoParticle.dragged = false;
-				protoParticle.vel(initPos);
-				protoParticle.position(touchPos);
-				addParticle();
+			if (count == 1) { // single tap
+				final float tapX = x;
+				final float tapY = y;
+				
+				// defer the tap event until we can confirm there's not another tap coming
+				singleTapTask = new Timer.Task() {
+					@Override
+					public void run() {
+						if (touchBottomBar(tapX, tapY)) return;
+						
+						touchPos.set(tapX, tapY, 0);
+						initPos.set(0, 0, 0); // just to avoid instantiating a new vector
+						camera.unproject(touchPos);
+						if (addSticky) {
+							addStickyParticle(touchPos);
+						} else {
+							protoParticle.dragged = false;
+							protoParticle.vel(initPos);
+							protoParticle.position(touchPos);
+							addParticle();
+						}						
+					}
+				};
+				Timer.schedule(singleTapTask, 0.2F);
+			} else if (count >= 2) { // multiple taps
+				singleTapTask.cancel(); // stop the single tap from firing
+				
+				Circle tapCircle = new Circle();
+				for (Particle p : particles) {
+					// check a slightly bigger area to allow for finger inaccuracy
+					tapCircle.set(p.x, p.y, p.radius * 1.5F); 
+					if (tapCircle.contains(x * camera.zoom, y * camera.zoom)) {
+						followedParticle = p;
+						return true;
+					}
+				}
+				
+				// if we make it here, no particle was tapped
+				if (followedParticle != null) {
+					followedParticle = null;
+				}
 			}
 			return true;
 		}
@@ -141,6 +176,10 @@ public class Universe extends Actor {
 				if (Math.abs(velY) < 0.01f)
 					velY = 0;
 			}
+			
+			if (followedParticle != null) {
+				camera.position.set(followedParticle.x * camera.zoom, followedParticle.y * camera.zoom, 0);
+			}
 		}
 	}
 
@@ -194,6 +233,7 @@ public class Universe extends Actor {
 
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
+		controller.update();
 		camera.update();
 
 		// draw particles and trails
