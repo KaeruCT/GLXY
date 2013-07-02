@@ -97,11 +97,13 @@ public class Universe extends Actor {
 			} else if (count >= 2) { // multiple taps
 				singleTapTask.cancel(); // stop the single tap from firing
 				
+				touchPos.set(x, y, 0);
+				camera.unproject(touchPos);
 				Circle tapCircle = new Circle();
 				for (Particle p : particles) {
 					// check a slightly bigger area to allow for finger inaccuracy
-					tapCircle.set(p.x, p.y, p.radius * 1.5F); 
-					if (tapCircle.contains(x * camera.zoom, y * camera.zoom)) {
+					tapCircle.set(p.x, p.y, p.radius * 1.5F);
+					if (tapCircle.contains(touchPos.x, touchPos.y)) {
 						followedParticle = p;
 						return true;
 					}
