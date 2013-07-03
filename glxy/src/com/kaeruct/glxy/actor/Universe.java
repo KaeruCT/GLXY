@@ -102,7 +102,7 @@ public class Universe extends Actor {
 				Circle tapCircle = new Circle();
 				for (Particle p : particles) {
 					// check a slightly bigger area to allow for finger inaccuracy
-					tapCircle.set(p.x, p.y, p.radius * 1.5F);
+					tapCircle.set(p.x, p.y, p.radius * 1.5F * camera.zoom);
 					if (tapCircle.contains(touchPos.x, touchPos.y)) {
 						followedParticle = p;
 						return true;
@@ -167,7 +167,7 @@ public class Universe extends Actor {
 			return false;
 		}
 
-		public void update() {
+		public void update() {		
 			if (flinging) {
 				velX *= 0.98f;
 				velY *= 0.98f;
@@ -180,7 +180,7 @@ public class Universe extends Actor {
 			}
 			
 			if (followedParticle != null) {
-				camera.position.set(followedParticle.x * camera.zoom, followedParticle.y * camera.zoom, 0);
+				camera.position.set(followedParticle.x, followedParticle.y, 0);
 			}
 		}
 	}
