@@ -58,12 +58,10 @@ public class Universe extends Actor {
 	class CameraController implements GestureListener {
 		Timer.Task singleTapTask;
 		float velX, velY;
-		boolean flinging = false;
 		float initialScale = 1;
 		float px, py;
 
 		public boolean touchDown(float x, float y, int pointer, int button) {
-			flinging = false;
 			initialScale = camera.zoom;
 			return false;
 		}
@@ -124,7 +122,6 @@ public class Universe extends Actor {
 
 		@Override
 		public boolean fling(float velocityX, float velocityY, int button) {
-			flinging = true;
 			velX = camera.zoom * velocityX * 0.5f;
 			velY = camera.zoom * velocityY * 0.5f;
 			return false;
@@ -168,17 +165,6 @@ public class Universe extends Actor {
 		}
 
 		public void update() {		
-			if (flinging) {
-				velX *= 0.98f;
-				velY *= 0.98f;
-				camera.position.add(-velX * Gdx.graphics.getDeltaTime(), velY
-						* Gdx.graphics.getDeltaTime(), 0);
-				if (Math.abs(velX) < 0.01f)
-					velX = 0;
-				if (Math.abs(velY) < 0.01f)
-					velY = 0;
-			}
-			
 			if (followedParticle != null) {
 				camera.position.set(followedParticle.x, followedParticle.y, 0);
 			}
