@@ -24,7 +24,6 @@ import com.badlogic.gdx.utils.Timer;
 import com.kaeruct.glxy.data.ImageCache;
 import com.kaeruct.glxy.model.Particle;
 import com.kaeruct.glxy.model.Settings;
-import com.kaeruct.glxy.model.StickyParticle;
 import com.kaeruct.glxy.model.Settings.Setting;
 
 public class Universe extends Actor {
@@ -41,7 +40,6 @@ public class Universe extends Actor {
 	
 	public Settings settings;
 	boolean addedParticle;
-	public boolean addSticky;
 	public boolean panning;
 
 	public final float minRadius = 5;
@@ -81,14 +79,11 @@ public class Universe extends Actor {
 						touchPos.set(tapX, tapY, 0);
 						initPos.set(0, 0, 0); // just to avoid instantiating a new vector
 						camera.unproject(touchPos);
-						if (addSticky) {
-							addStickyParticle(touchPos);
-						} else {
-							protoParticle.dragged = false;
-							protoParticle.vel(initPos);
-							protoParticle.position(touchPos);
-							addParticle();
-						}						
+						
+						protoParticle.dragged = false;
+						protoParticle.vel(initPos);
+						protoParticle.position(touchPos);
+						addParticle();
 					}
 				};
 				Timer.schedule(singleTapTask, 0.2F);
@@ -253,8 +248,7 @@ public class Universe extends Actor {
 		if (panning)
 			return;
 
-		if (!addSticky && // skip particle dragging for stickies
-                Gdx.input.isTouched(0) && !Gdx.input.isTouched(1) && !Gdx.input.justTouched() && // only one finger is touching
+		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1) && !Gdx.input.justTouched() && // only one finger is touching
 				!touchBottomBar(Gdx.input.getX(0), Gdx.input.getY(0))) { // not touching the bar at the bottom
 
 			touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
@@ -377,17 +371,6 @@ public class Universe extends Actor {
 		particles.add(p);
 		addedParticle = true;
 		
-		fire(new ChangeEvent());
-	}
-	
-	private void addStickyParticle(Vector3 pos) {
-		StickyParticle p = new StickyParticle();
-		p.radius(protoParticle.radius);
-		p.position(pos);
-		particles.add(p);
-		addedParticle = true;
-		
-		addSticky = false;
 		fire(new ChangeEvent());
 	}
 

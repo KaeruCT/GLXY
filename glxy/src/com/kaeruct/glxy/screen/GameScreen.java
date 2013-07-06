@@ -93,21 +93,6 @@ public class GameScreen extends Screen {
 		});
 		panButton.pad(padY, padX, padY, padX);
 		panButton.setChecked(universe.panning);
-		
-		final TextButton stickyButton = new TextButton("Sticky", skin, "toggle");
-		stickyButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				universe.addSticky = stickyButton.isChecked();
-			}
-		});
-		universe.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				stickyButton.setChecked(universe.addSticky);
-			}
-		});
-		stickyButton.pad(padY, padX, padY, padX);
 
 		b1.pad(padY, padX, padY, padX);
 		b2.pad(padY, padX, padY, padX);
@@ -120,9 +105,8 @@ public class GameScreen extends Screen {
 		table.add(b1).left().pad(4);
 		table.add(b2).center().pad(4);
 		table.add(b3).right().pad(4);		
-		table.add(stickyButton).right().expandX().pad(4);
 		
-		table.add(panButton).right().pad(4);
+		table.add(panButton).right().pad(4).expandX();
 		table.add(t4).right().pad(4);
 	}
 	
