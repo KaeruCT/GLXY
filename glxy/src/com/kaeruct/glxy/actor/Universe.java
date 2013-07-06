@@ -348,6 +348,15 @@ public class Universe extends Actor {
 	}
 
 	private void renderParticles(SpriteBatch batch) {
+		if (followedParticle != null) {	
+			batch.setColor(Color.WHITE);
+			batch.draw(texture,
+					followedParticle.x - followedParticle.radius * 1.05F,
+					followedParticle.y - followedParticle.radius * 1.05F,
+					followedParticle.radius * 2.1F,
+					followedParticle.radius * 2.1F);
+		}
+		
 		for (Particle p : particles) {
 			Color c = p.color;
 			if (settings.get(Setting.TRAILS) && !settings.get(Setting.PAUSED)) {
