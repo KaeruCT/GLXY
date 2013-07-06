@@ -5,7 +5,7 @@ repeat: none
 circle
   rotate: false
   xy: 0, 0
-  size: 128, 128
-  orig: 128, 128
+  size: 256, 256
+  orig: 256, 256
   offset: 0, 0
   index: -1
