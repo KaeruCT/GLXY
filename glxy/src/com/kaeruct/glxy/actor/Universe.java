@@ -55,7 +55,6 @@ public class Universe extends Actor {
 
 	class CameraController implements GestureListener {
 		Timer.Task singleTapTask;
-		float velX, velY;
 		float initialScale = 1;
 		float px, py;
 
@@ -117,8 +116,6 @@ public class Universe extends Actor {
 
 		@Override
 		public boolean fling(float velocityX, float velocityY, int button) {
-			velX = camera.zoom * velocityX * 0.5f;
-			velY = camera.zoom * velocityY * 0.5f;
 			return false;
 		}
 
@@ -349,12 +346,12 @@ public class Universe extends Actor {
 
 	private void renderParticles(SpriteBatch batch) {
 		if (followedParticle != null) {	
-			batch.setColor(Color.WHITE);
+			batch.setColor(0.2f, 0.2f, 0.9f, 1);
 			batch.draw(texture,
-					followedParticle.x - followedParticle.radius * 1.05F,
-					followedParticle.y - followedParticle.radius * 1.05F,
-					followedParticle.radius * 2.1F,
-					followedParticle.radius * 2.1F);
+					followedParticle.x - followedParticle.radius * 1.05f,
+					followedParticle.y - followedParticle.radius * 1.05f,
+					followedParticle.radius * 2.1f,
+					followedParticle.radius * 2.1f);
 		}
 		
 		for (Particle p : particles) {
