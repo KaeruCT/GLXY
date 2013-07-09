@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -20,7 +21,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
 import com.kaeruct.glxy.data.ImageCache;
 import com.kaeruct.glxy.model.Particle;
 import com.kaeruct.glxy.model.Settings;
@@ -52,9 +52,10 @@ public class Universe extends Actor {
 	final int maxTrails = 500; // max trails for all particles
 	private Rectangle bottomBar = null;
 	private Texture texture;
+	private Texture bg;
+	private Matrix4 m4;
 
 	class CameraController implements GestureListener {
-		Timer.Task singleTapTask;
 		float initialScale = 1;
 		float px, py;
 
@@ -62,48 +63,51 @@ public class Universe extends Actor {
 			initialScale = camera.zoom;
 			return false;
 		}
+		
+		private Particle getTouchedParticle(float x, float y) {
+			Circle tapCircle = new Circle();
+			for (Particle p : particles) {
+				// check a slightly bigger area to allow for finger inaccuracy
+				tapCircle.set(p.x, p.y, p.radius * 1.5F * camera.zoom);
+				if (tapCircle.contains(x, y)) {
+					return p;
+				}
+			}
+			return null;
+		}
+		
+		private void singleTap(float tapX, float tapY) {
+			if (touchBottomBar(tapX, tapY)) return;
+			
+			touchPos.set(tapX, tapY, 0);
+			initPos.set(0, 0, 0); // just to avoid instantiating a new vector
+			camera.unproject(touchPos);
+			
+			protoParticle.dragged = false;
+			protoParticle.vel(initPos);
+			protoParticle.position(touchPos);
+			addParticle();
+		}
 
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
-			if (count == 1) { // single tap
-				final float tapX = x;
-				final float tapY = y;
-				
-				// defer the tap event until we can confirm there's not another tap coming
-				singleTapTask = new Timer.Task() {
-					@Override
-					public void run() {
-						if (touchBottomBar(tapX, tapY)) return;
-						
-						touchPos.set(tapX, tapY, 0);
-						initPos.set(0, 0, 0); // just to avoid instantiating a new vector
-						camera.unproject(touchPos);
-						
-						protoParticle.dragged = false;
-						protoParticle.vel(initPos);
-						protoParticle.position(touchPos);
-						addParticle();
-					}
-				};
-				Timer.schedule(singleTapTask, 0.2F);
-			} else if (count >= 2) { // multiple taps
-				singleTapTask.cancel(); // stop the single tap from firing
-				
-				touchPos.set(x, y, 0);
-				camera.unproject(touchPos);
-				Circle tapCircle = new Circle();
-				for (Particle p : particles) {
-					// check a slightly bigger area to allow for finger inaccuracy
-					tapCircle.set(p.x, p.y, p.radius * 1.5F * camera.zoom);
-					if (tapCircle.contains(touchPos.x, touchPos.y)) {
-						followedParticle = p;
-						return true;
-					}
+			touchPos.set(x, y, 0);
+			camera.unproject(touchPos);
+			
+			if (count == 1) { // single tap 
+				if (followedParticle == null || getTouchedParticle(touchPos.x, touchPos.y) == null) {
+					// single tap that wasn't either on another particle or the one already being followed
+					singleTap(x, y);
+					return true;
 				}
-				
-				// if we make it here, no particle was tapped
-				if (followedParticle != null) {
+			} else if (count >= 2) { // multiple taps
+				Particle p = getTouchedParticle(touchPos.x, touchPos.y);
+				if (p == followedParticle) {
+					// stop following the followed particle if it was tapped
 					followedParticle = null;
+				} else if (p != null) {
+					// follow a new particle
+					followedParticle = p;
 				}
 			}
 			return true;
@@ -193,6 +197,9 @@ public class Universe extends Actor {
 		texture = ImageCache.getTexture("circle").getTexture();
 		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		trailParticles = new TrailParticleManager(maxTrails, texture);
+		
+		bg = new Texture(Gdx.files.internal("data/bg.png"));
+		bg.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
 	}
 
 	public Universe() {
@@ -216,8 +223,14 @@ public class Universe extends Actor {
 		controller.update();
 		camera.update();
 
+		if (m4 == null) {
+			m4 = batch.getProjectionMatrix().cpy();
+		}
+		
+		// draw background
+		batch.draw(bg, 0, getY(), getWidth(), getHeight());
+		
 		// draw particles and trails
-		Matrix4 m4 = batch.getProjectionMatrix().cpy();
 		batch.setProjectionMatrix(camera.combined);
 		renderParticles(batch);
 		batch.end();
