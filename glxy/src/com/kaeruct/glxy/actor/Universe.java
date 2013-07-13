@@ -394,6 +394,7 @@ public class Universe extends Actor {
 	public void clearParticles() {
 		particles.clear();
 		clearTrails();
+		followedParticle = null;
 
 		fire(new ChangeEvent());
 	}
