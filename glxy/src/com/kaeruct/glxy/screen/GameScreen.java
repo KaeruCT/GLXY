@@ -39,26 +39,32 @@ public class GameScreen extends Screen {
 				}
 			}
 		});
+		String b1t = "Small", b2t =" Medium", b3t = "Large";
+		if (Gdx.graphics.getWidth() <= 320) {
+			b1t = "S";
+			b2t = "M";
+			b3t = "L";
+		}
 		final ButtonGroup rbg = new ButtonGroup();
-		final TextButton b1 = new TextButton("Small", skin, "toggle");
+		final TextButton b1 = new TextButton(b1t, skin, "toggle");
 		b1.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				universe.setParticleRadius(universe.minRadius);
 			}
 		});
-		final TextButton b2 = new TextButton("Medium", skin, "toggle");
+		final TextButton b2 = new TextButton(b2t, skin, "toggle");
 		b2.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				universe.setParticleRadius(universe.minRadius + universe.maxRadius/4);
 			}
 		});
-		final TextButton b3 = new TextButton("Large", skin, "toggle");
+		final TextButton b3 = new TextButton(b3t, skin, "toggle");
 		b3.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				universe.setParticleRadius(universe.minRadius + universe.maxRadius/2);
+				universe.setParticleRadius(universe.maxRadius/2);
 			}
 		});
 

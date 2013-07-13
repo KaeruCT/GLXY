@@ -47,7 +47,7 @@ public class Universe extends Actor {
 	public final float radiusStep = 5;
 	public final float minZoom = 0.1f;
 	public final float maxZoom = 16;
-	final float G = 0.05f; // gravity constant
+	final float G = 0.1f; // gravity constant
 	final float sG = G * 0.5f; // multiplier for slingshot
 	final int maxTrails = 500; // max trails for all particles
 	private Rectangle bottomBar = null;
@@ -228,7 +228,7 @@ public class Universe extends Actor {
 		}
 		
 		// draw background
-		batch.draw(bg, 0, getY(), getWidth(), getHeight());
+		//batch.draw(bg, 0, getY(), getWidth(), getHeight());
 		
 		// draw particles and trails
 		batch.setProjectionMatrix(camera.combined);
@@ -301,13 +301,11 @@ public class Universe extends Actor {
 		Iterator<Particle> it;
 		for (int i = 0; i < particles.size; i++) {
 			Particle p = particles.get(i);
-			if (p.dead)
-				continue;
+			if (p.dead) continue;
 
 			for (int j = 0; j < particles.size; j++) {
 				Particle p2 = particles.get(j);
-				if (p2.dead || i == j)
-					continue;
+				if (p2.dead || i == j) continue;
 
 				float dx = p2.x - p.x;
 				float dy = p2.y - p.y;
@@ -315,9 +313,9 @@ public class Universe extends Actor {
 				if (d == 0) d = 1;
 
 				if (p.collidesWith(p2)) {
-					// collision
 					if (settings.get(Setting.COLLISION)) {
-						float mtd = 4 * (p.radius + p2.radius - d) / d;
+						// collision
+						float mtd = 2 * (p.radius + p2.radius - d) / d;
 						p2.inc(dx * mtd / p2.radius, dy * mtd / p2.radius);
 						p2.dx += dx * mtd / p2.mass;
 						p2.dy += dy * mtd / p2.mass;
@@ -327,6 +325,7 @@ public class Universe extends Actor {
 						p.dy -= dy * mtd / p.mass;
 
 					} else {
+						// kill smaller particle
 						if (p.radius > p2.radius) {
 							p.radius((float)(p.radius + Math.sqrt(p2.radius / 2)));
 							p2.kill();
@@ -338,8 +337,7 @@ public class Universe extends Actor {
 					}
 				} else {
 					// "gravity"
-					float force = (float) (G * p.mass * p2.mass / Math
-							.pow(d, 2));
+					float force = (float) (G * p.mass * p2.mass / Math.pow(d, 2));
 					float fscale = force / d;
 					p.dx += fscale * dx / p.mass;
 					p.dy += fscale * dy / p.mass;
@@ -359,7 +357,7 @@ public class Universe extends Actor {
 
 	private void renderParticles(SpriteBatch batch) {
 		if (followedParticle != null) {	
-			batch.setColor(0.2f, 0.2f, 0.9f, 1);
+			batch.setColor(0.9f, 0.2f, 0.2f, 1);
 			batch.draw(texture,
 					followedParticle.x - followedParticle.radius * 1.05f,
 					followedParticle.y - followedParticle.radius * 1.05f,
