@@ -2,6 +2,8 @@
 
 A simplified gravity simulator for Android.
 
+Built with [libgdx](http://libgdx.badlogicgames.com/).
+
 # Controls
 
 ## Touch gestures supported:
@@ -21,3 +23,7 @@ A simplified gravity simulator for Android.
 - Collision mode: Bounce / merge particles.
 - Reset zoom: Resets the zoom to default.
 - Reset particles: Removes all the particles from the field.
+
+# Screenshots
+![1.png](http://kaeruct.github.io/galleries/glxy-android/1.png)
+![2.png](http://kaeruct.github.io/galleries/glxy-android/1.png)
