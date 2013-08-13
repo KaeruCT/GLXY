@@ -7,7 +7,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.utils.ArrayMap;
-import com.kaeruct.glxy.data.ImageCache;
 import com.kaeruct.glxy.screen.Screen;
 
 public class GlxyGame implements ApplicationListener {

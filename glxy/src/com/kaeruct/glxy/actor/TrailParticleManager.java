@@ -6,8 +6,6 @@ import java.util.Iterator;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.kaeruct.glxy.data.ImageCache;
 import com.kaeruct.glxy.model.TrailParticle;
 
 public class TrailParticleManager {
