@@ -112,7 +112,6 @@ public class Particle extends Circle {
 	public boolean collidesWith(Particle p2) {
 		float dx = p2.x - x, dy = p2.y - y;
 
-		return Math.pow(dx, 2) + Math.pow(dy, 2) < Math.pow(radius + p2.radius,
-				2);
+		return Math.pow(dx, 2) + Math.pow(dy, 2) < Math.pow(radius + p2.radius, 2);
 	}
 }
