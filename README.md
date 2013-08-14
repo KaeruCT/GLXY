@@ -1,4 +1,4 @@
-# glxy-android
+# GLXY
 
 A simplified gravity simulator for Android.
 
@@ -18,11 +18,15 @@ and [Apache Ant](https://github.com/apache/ant) installed.
 
 1. Clone the repo:
 
-   `$ git clone https://github.com/KaeruCT/glxy-android.git`
+   `$ git clone https://github.com/KaeruCT/GLXY.git`
 
 2. Go into the android project directory:
 
-   `$ cd glxy-android/glxy-android`
+   `$ cd GLXY/glxy-android`
+   
+4. Run `android update project`:
+   
+   `$ android update project --path .`
 
 3. Run Ant:
 
@@ -32,6 +36,7 @@ and [Apache Ant](https://github.com/apache/ant) installed.
    `$ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore bin/GLXY-release-unsigned.apk alias_name`
 
 5. Install the APK to your device:
+
    You can do this manually, or with [adb](http://developer.android.com/tools/help/adb.html):
 
    `$ adb install bin/GLXY-release-unsigned.apk`
