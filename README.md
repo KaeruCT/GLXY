@@ -14,11 +14,12 @@ You can also build the application with Apache Ant.
 To build, you will need to have the [Android SDK](https://developer.android.com/sdk/index.html)
 and [Apache Ant](https://github.com/apache/ant) installed.
 
-Be sure to have the required target SDK version installed. This application needs version 17.
-You can install it with the Android SDK.
+Be sure to have a supported target SDK version installed.
+This application needs from version 5 onwards. It has been tested with version 17.
+You can list the SDK versions you have installed with `$ android list targets`
 
 Additionally, you will need jarsigner if you want to sign the resulting APK.
-jarsigner comes with the Java JDK.
+The jarsigner utility comes with the Java JDK.
 
 1. Clone the repo:
 
@@ -30,10 +31,10 @@ jarsigner comes with the Java JDK.
    
 4. Update the Android project:
 
-   `$ android update project --path .`
+   `$ android update project --path . --target android-17`
 
-   If there's an error, it means you probably do not have the target version installed.
-   You need version 17 to build this application.
+   If you don't have version 17 of the SDK, replace `android-17` for one the
+   SDK versions you have installed.
 
 3. Run Ant:
 
