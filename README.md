@@ -4,6 +4,38 @@ A simplified gravity simulator for Android.
 
 Built with [libgdx](http://libgdx.badlogicgames.com/).
 
+# Building
+
+## Eclipse
+If you have [Eclipse with the ADT Plugin](https://developer.android.com/tools/sdk/eclipse-adt.html), you can
+just [download this zip](https://github.com/KaeruCT/glxy-android/archive/master.zip), extract it,
+import the projects inside into Eclipse and then export an APK.
+
+## Ant
+You can also build the application with Apache Ant.
+To build, you will need to have the [Android SDK](https://developer.android.com/sdk/index.html)
+and [Apache Ant](https://github.com/apache/ant) installed.
+
+1. Clone the repo:
+
+   `$ git clone https://github.com/KaeruCT/glxy-android.git`
+
+2. Go into the android project directory:
+
+   `$ cd glxy-android/glxy-android`
+
+3. Run Ant:
+
+   `$ ant release`
+
+4. Sign the resulting APK file:
+   `$ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore bin/GLXY-release-unsigned.apk alias_name`
+
+5. Install the APK to your device:
+   You can do this manually, or with [adb](http://developer.android.com/tools/help/adb.html):
+
+   `$ adb install bin/GLXY-release-unsigned.apk`
+
 # Controls
 
 ## Touch gestures supported:
