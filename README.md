@@ -16,6 +16,12 @@ You can also build the application with Apache Ant.
 To build, you will need to have the [Android SDK](https://developer.android.com/sdk/index.html)
 and [Apache Ant](https://github.com/apache/ant) installed.
 
+Be sure to have the required target SDK version installed. This app needs version 17.
+You can install it with the Android SDK.
+
+Additionally, you will need jarsigner if you want to sign the resulting APK.
+jarsigner comes with the Java JDK.
+
 1. Clone the repo:
 
    `$ git clone https://github.com/KaeruCT/GLXY.git`
@@ -24,8 +30,9 @@ and [Apache Ant](https://github.com/apache/ant) installed.
 
    `$ cd GLXY/glxy-android`
    
-4. Run `android update project`:
+4. Update the Android project:
    
+   If there's an error, it means you probably do not have the target version installed.
    `$ android update project --path .`
 
 3. Run Ant:
