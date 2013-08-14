@@ -1,8 +1,6 @@
 # GLXY
 
-A simplified gravity simulator for Android.
-
-Built with [libgdx](http://libgdx.badlogicgames.com/).
+A simplified gravity simulator for Android, built with [libgdx](http://libgdx.badlogicgames.com/).
 
 # Building
 
@@ -16,7 +14,7 @@ You can also build the application with Apache Ant.
 To build, you will need to have the [Android SDK](https://developer.android.com/sdk/index.html)
 and [Apache Ant](https://github.com/apache/ant) installed.
 
-Be sure to have the required target SDK version installed. This app needs version 17.
+Be sure to have the required target SDK version installed. This application needs version 17.
 You can install it with the Android SDK.
 
 Additionally, you will need jarsigner if you want to sign the resulting APK.
@@ -31,22 +29,27 @@ jarsigner comes with the Java JDK.
    `$ cd GLXY/glxy-android`
    
 4. Update the Android project:
-   
-   If there's an error, it means you probably do not have the target version installed.
+
    `$ android update project --path .`
+
+   If there's an error, it means you probably do not have the target version installed.
+   You need version 17 to build this application.
 
 3. Run Ant:
 
    `$ ant release`
 
 4. Sign the resulting APK file:
-   `$ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore bin/GLXY-release-unsigned.apk alias_name`
-
+```
+   $ mv bin/GLXY-release-unsigned.apk GLXY.apk && \
+   jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 \
+     -keystore my-release-key.keystore GLXY.apk alias_name
+```
 5. Install the APK to your device:
 
    You can do this manually, or with [adb](http://developer.android.com/tools/help/adb.html):
 
-   `$ adb install bin/GLXY-release-unsigned.apk`
+   `$ adb install GLXY.apk`
 
 # Controls
 
