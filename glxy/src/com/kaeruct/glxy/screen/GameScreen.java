@@ -106,14 +106,15 @@ public class GameScreen extends Screen {
 		
 		// set up table layout
 		table.add(universe).expand().fill().colspan(7).row();
-		table.add(l2).pad(4).fillX().expandX();
 		
+		table.add(l2).pad(4).fillX().expandX();
 		table.add(b1).left().pad(4);
 		table.add(b2).center().pad(4);
 		table.add(b3).right().pad(4);		
-		
 		table.add(panButton).right().pad(4).expandX();
 		table.add(t4).right().pad(4);
+		
+		universe.setBottomBar(Gdx.graphics.getWidth(), panButton.getHeight());
 	}
 	
 	@Override
@@ -124,15 +125,11 @@ public class GameScreen extends Screen {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-		universe.resize();
-	}
-	@Override
 	public void dispose() {
 		universe.dispose();
 		settingsTexture.dispose();
 	}
+	
 	@Override
 	public void onKeyUp (int keycode) {
 		if (keycode == Keys.MENU) {

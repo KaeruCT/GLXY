@@ -2,11 +2,13 @@ package com.kaeruct.glxy.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Scaling;
 import com.kaeruct.glxy.GlxyGame;
 
 public abstract class Screen implements com.badlogic.gdx.Screen {
@@ -14,8 +16,8 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
 	protected GlxyGame game;
 	protected Table table;
 	protected Skin skin;
-	protected boolean backJustPressed;
-	protected boolean menuJustPressed;
+	private static final int VIRTUAL_WIDTH = 600;
+	private static final int VIRTUAL_HEIGHT = 400;
 
 	public Screen (GlxyGame gm) {
 		game = gm;
@@ -35,6 +37,21 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
 				return false;
 			}
 		});
+		initViewport();
+	}
+	
+	private void initViewport()
+	{
+		stage.setViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, true);
+//		float w = Gdx.graphics.getWidth(),
+//			  h = Gdx.graphics.getHeight();
+//		
+//		Vector2 size = Scaling.fit.apply(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, w, h);
+//        int viewportX = (int)(w - size.x) / 2;
+//        int viewportY = (int)(h - size.y) / 2;
+//        int viewportWidth = (int)size.x;
+//        int viewportHeight = (int)size.y;
+//        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
 	}
 
 	public void onKeyUp(int keycode) {
@@ -43,7 +60,7 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
 	
 	@Override
 	public void render (float delta) {
-		Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
+		Gdx.gl.glClearColor(0.1f, 0.1f, 0.11f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(delta);
 		stage.draw();
@@ -51,7 +68,6 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, true);
 		table.invalidate();
 	}
 

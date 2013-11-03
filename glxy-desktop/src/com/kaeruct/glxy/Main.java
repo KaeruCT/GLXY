@@ -8,7 +8,7 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "glxy";
 		cfg.useGL20 = true;
-		cfg.width = 640;
+		cfg.width = 720;
 		cfg.height = 480;
 		
 		new LwjglApplication(new GlxyGame(), cfg);
