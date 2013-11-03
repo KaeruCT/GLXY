@@ -16,8 +16,8 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
 	protected GlxyGame game;
 	protected Table table;
 	protected Skin skin;
-	private static final int VIRTUAL_WIDTH = 600;
-	private static final int VIRTUAL_HEIGHT = 400;
+	public static final int VIRTUAL_WIDTH = 600;
+	public static final int VIRTUAL_HEIGHT = 400;
 
 	public Screen (GlxyGame gm) {
 		game = gm;
@@ -43,15 +43,6 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
 	private void initViewport()
 	{
 		stage.setViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, true);
-//		float w = Gdx.graphics.getWidth(),
-//			  h = Gdx.graphics.getHeight();
-//		
-//		Vector2 size = Scaling.fit.apply(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, w, h);
-//        int viewportX = (int)(w - size.x) / 2;
-//        int viewportY = (int)(h - size.y) / 2;
-//        int viewportWidth = (int)size.x;
-//        int viewportHeight = (int)size.y;
-//        Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
 	}
 
 	public void onKeyUp(int keycode) {

@@ -114,7 +114,9 @@ public class GameScreen extends Screen {
 		table.add(panButton).right().pad(4).expandX();
 		table.add(t4).right().pad(4);
 		
-		universe.setBottomBar(Gdx.graphics.getWidth(), panButton.getHeight());
+		// this is horrible, but i am too stupid to make this work correctly
+		float scale = 2 * (float)Gdx.graphics.getHeight() / (float)Screen.VIRTUAL_HEIGHT;
+		universe.setBottomBar(Gdx.graphics.getWidth(), panButton.getHeight() * scale);
 	}
 	
 	@Override

@@ -189,7 +189,7 @@ public class Universe extends Actor {
 		bottomBar = new Rectangle();
 
 		settings = new Settings();
-
+		
 		resize();
 	}
 
@@ -252,23 +252,21 @@ public class Universe extends Actor {
 		Gdx.gl.glDisable(GL10.GL_BLEND);
 
 		if (!panning && protoParticle.dragged) {
-			sr.setProjectionMatrix(camera.combined
-					.cpy()
-					.translate(
-							(camera.position.x - Gdx.graphics.getWidth() / 2),
-							(camera.position.y - Gdx.graphics.getHeight() / 2),
-							0)
-					.scale(Gdx.graphics.getWidth() / 2 * camera.zoom,
-							Gdx.graphics.getHeight() * camera.zoom, 0f));
 			// draw "slingshot" line
-			sr.begin(ShapeType.Line);
-			sr.setColor(Color.LIGHT_GRAY);
-
-			sr.line(cinitPos.x, cinitPos.y, ctouchPos.x, ctouchPos.y);
-			sr.end();
-			sr.setProjectionMatrix(m4);
+			
+			// TODO: i think stage.setViewport broke this
+			// i can't get consistent placement on different screen sizes
+			
+//			sr.begin(ShapeType.Line);
+//			sr.setColor(Color.LIGHT_GRAY);
+//			float yoff = getTop();
+//			
+//			sr.line(cinitPos.x,
+//					yoff - cinitPos.y, 
+//					ctouchPos.x,
+//					yoff - ctouchPos.y);
+//			sr.end();
 		}
-
 		batch.setProjectionMatrix(m4);
 		batch.begin();
 	}
