@@ -69,7 +69,7 @@ public class Universe extends Actor {
 			Circle tapCircle = new Circle();
 			for (Particle p : particles) {
 				// check a slightly bigger area to allow for finger inaccuracy
-				tapCircle.set(p.x, p.y, p.radius * 1.5F * camera.zoom);
+				tapCircle.set(p.x, p.y, p.radius * 1.4f * camera.zoom);
 				if (tapCircle.contains(x, y)) {
 					return p;
 				}
@@ -189,19 +189,17 @@ public class Universe extends Actor {
 		bottomBar = new Rectangle();
 
 		settings = new Settings();
-		
-		
+
 		resize();
 	}
-	
+
 	public void setBottomBar(float w, float h) {
 		bottomBar.set(0, 0, w, h);
 	}
 
 	public void resize() {
-		float w = Gdx.graphics.getWidth(),
-			  h = Gdx.graphics.getHeight();
-		
+		float w = Gdx.graphics.getWidth(), h = Gdx.graphics.getHeight();
+
 		camera.setToOrtho(true, w, h);
 		camera.position.set(w / 2f, h / 2f, 0);
 
@@ -221,7 +219,7 @@ public class Universe extends Actor {
 	@Override
 	public void act(float delta) {
 		manageInput();
-		
+
 		if (!settings.get(Setting.PAUSED)) {
 			updateParticles();
 		}
@@ -235,7 +233,7 @@ public class Universe extends Actor {
 		if (m4 == null) {
 			m4 = batch.getProjectionMatrix().cpy();
 		}
-		
+
 		// draw background
 		// batch.draw(bg, 0, getY(), getWidth(), getHeight());
 
@@ -254,40 +252,44 @@ public class Universe extends Actor {
 		Gdx.gl.glDisable(GL10.GL_BLEND);
 
 		if (!panning && protoParticle.dragged) {
+			sr.setProjectionMatrix(camera.combined
+					.cpy()
+					.translate(
+							(camera.position.x - Gdx.graphics.getWidth() / 2),
+							(camera.position.y - Gdx.graphics.getHeight() / 2),
+							0)
+					.scale(Gdx.graphics.getWidth() / 2 * camera.zoom,
+							Gdx.graphics.getHeight() * camera.zoom, 0f));
 			// draw "slingshot" line
 			sr.begin(ShapeType.Line);
 			sr.setColor(Color.LIGHT_GRAY);
 
-			sr.line(cinitPos.x, getY() + getHeight() - cinitPos.y, ctouchPos.x,
-					getY() + getHeight() - ctouchPos.y);
+			sr.line(cinitPos.x, cinitPos.y, ctouchPos.x, ctouchPos.y);
 			sr.end();
+			sr.setProjectionMatrix(m4);
 		}
+
 		batch.setProjectionMatrix(m4);
 		batch.begin();
 	}
-	
+
 	public void manageInput() {
 		if (panning || inMenu)
 			return;
 
 		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1)
 				&& !Gdx.input.justTouched() && // only one finger is touching
-				!touchBottomBar(Gdx.input.getX(0), Gdx.input.getY(0))) { // not
-																			// touching
-																			// the
-																			// bar
-																			// at
-																			// the
-																			// bottom
+				!touchBottomBar(Gdx.input.getX(0), Gdx.input.getY(0))) {
 
 			touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
 			ctouchPos.set(touchPos);
 
-			if (null == hit(touchPos.x, touchPos.y, false)) {
-				addedParticle = true;
-				protoParticle.dragged = false;
-				return;
-			}
+			// I have no idea what this was for
+			// if (null == hit(touchPos.x, touchPos.y, false)) {
+			// addedParticle = true;
+			// protoParticle.dragged = false;
+			// return;
+			// }
 
 			camera.unproject(touchPos);
 			addedParticle = false;
@@ -344,17 +346,17 @@ public class Universe extends Actor {
 						p.dy -= dy * mtd / p.mass;
 
 					} else {
-						// kill smaller particle
-						if (p.radius > p2.radius) {
-							p.radius((float) (p.radius + Math
-									.sqrt(p2.radius / 2)));
-							p2.kill();
-							break;
-						} else {
-							p2.radius((float) (p2.radius + Math
-									.sqrt(p.radius / 2)));
-							p.kill();
+						Particle bigger = p.radius >= p2.radius ? p : p2,
+						smaller = p.radius < p2.radius ? p : p2;
+						
+						bigger.radius((float) (p2.radius + Math.sqrt(p.radius / 2)));
+						smaller.kill();
+						
+						if (smaller == followedParticle) {
+							followedParticle = bigger;
 						}
+						
+						if (p2 == smaller) break;
 					}
 				} else {
 					// "gravity"
@@ -378,7 +380,7 @@ public class Universe extends Actor {
 	}
 
 	private void renderParticles(SpriteBatch batch) {
-		if (followedParticle != null) {
+		if (followedParticle != null && !followedParticle.dead) {
 			batch.setColor(0.9f, 0.2f, 0.2f, 1);
 			batch.draw(texture, followedParticle.x - followedParticle.radius
 					* 1.05f, followedParticle.y - followedParticle.radius
