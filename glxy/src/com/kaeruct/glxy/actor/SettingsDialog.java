@@ -108,6 +108,7 @@ public class SettingsDialog extends Dialog {
 	public Dialog show(Stage stage) {
 		super.show(stage);
 		this.isShowing = true;
+		universe.inMenu = true;
 		return this;
 	}
 	
@@ -115,6 +116,7 @@ public class SettingsDialog extends Dialog {
 	public void hide() {
 		super.hide();
 		this.isShowing = false;
+		universe.inMenu = false;
 	}
 	
 	public boolean isShowing() {

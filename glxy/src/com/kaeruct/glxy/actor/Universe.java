@@ -41,6 +41,7 @@ public class Universe extends Actor {
 	public Settings settings;
 	boolean addedParticle;
 	public boolean panning;
+	public boolean inMenu;
 
 	public final float minRadius = 5;
 	public final float maxRadius = 80;
@@ -255,7 +256,7 @@ public class Universe extends Actor {
 	}
 
 	public void manageInput() {
-		if (panning)
+		if (panning || inMenu)
 			return;
 
 		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1) && !Gdx.input.justTouched() && // only one finger is touching
