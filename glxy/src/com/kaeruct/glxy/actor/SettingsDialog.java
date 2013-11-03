@@ -33,8 +33,11 @@ public class SettingsDialog extends Dialog {
 		setMovable(false);
 		
 		final Label toggleTitle = new Label("Toggleable", skin);
-		toggleTitle.setAlignment(Align.left);                                // make the dialog at least this wide
-		getContentTable().add(toggleTitle).left().pad(padY, padX, padY, padX).width(Gdx.graphics.getWidth() * 0.5f).row();
+		toggleTitle.setAlignment(Align.left);
+		
+		// make the dialog at least this wide
+		getContentTable().add(toggleTitle).left().
+		width(Gdx.graphics.getWidth() * 0.5f).row();
 		
 		// add checkboxes
 		addButton(Setting.PAUSED, skin);
@@ -68,7 +71,7 @@ public class SettingsDialog extends Dialog {
 		getContentTable().row();
 		final Label buttonTitle = new Label("Reset", skin);
 		buttonTitle.setAlignment(Align.left);
-		getContentTable().add(buttonTitle).left().pad(padY, padX, padY, padX).row();
+		getContentTable().add(buttonTitle).left().row();
 		getContentTable().add(buttonTable).left().pad(padY, padX, padY, padX);
 		
 		// add close button
@@ -90,6 +93,7 @@ public class SettingsDialog extends Dialog {
 	}
 
 	public void addButton(final Setting setting, Skin skin) {
+		
 		final TextButton button = new TextButton(universe.settings.getDescription(setting), skin, "toggle");
 		button.addListener(new ClickListener() {
 			@Override

@@ -30,7 +30,7 @@ public class GameScreen extends Screen {
 		super(gg);
 		universe = new Universe();
 		settingsTexture = new Texture(Gdx.files.internal("data/gear.png"));
-		settingsDialog = new SettingsDialog(universe, skin, padX, padY);
+		settingsDialog = new SettingsDialog(universe, skin, padX-4, padY-4);
 		settingsDialog.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
