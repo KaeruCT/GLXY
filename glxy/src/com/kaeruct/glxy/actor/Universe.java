@@ -3,6 +3,7 @@ package com.kaeruct.glxy.actor;
 import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -36,11 +37,12 @@ public class Universe extends Actor {
 	final Vector3 initPos, touchPos, cinitPos, ctouchPos;
 	final CameraController controller;
 	public final GestureDetector gestureDetector;
-
+	
 	private Particle followedParticle;
-
+	
 	public Settings settings;
 	boolean addedParticle;
+	private int curPointer;
 	public boolean panning;
 	public boolean inMenu;
 
@@ -55,28 +57,86 @@ public class Universe extends Actor {
 	private Texture texture;
 	private Texture bg;
 	private Matrix4 m4;
+	
+	class UniverseGestureDetector extends GestureDetector {
+		// FIXME: most of this code is copy/pasted from the old manageInput
+		// make sure it's all necessary
+		public UniverseGestureDetector(float halfTapSquareSize,
+				float tapCountInterval, float longPressDuration,
+				float maxFlingDelay, GestureListener listener) {
+			super(halfTapSquareSize, tapCountInterval, longPressDuration, maxFlingDelay,
+					listener);
+		}
 
+		@Override
+		public boolean touchDown(float x, float y, int pointer, int button) {
+			super.touchDown(x, y, pointer, button);
+			
+			// in a menu, panning, touching bottom bar
+			if (inMenu || panning || touchBottomBar(x, y)) {
+				return false;
+			}
+			
+			touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
+			ctouchPos.set(touchPos);
+			camera.unproject(touchPos);
+			
+			// not touching a particle and (not dragging?)
+			if (getTouchedParticle(touchPos.x, touchPos.y) == null
+					&& !protoParticle.dragged) {
+				protoParticle.stop();
+				initPos.set(touchPos);
+				cinitPos.set(ctouchPos);
+				curPointer = pointer;
+			}
+			
+			return true;
+		}
+		
+		@Override
+		public boolean touchUp(float x, float y, int pointer, int button) {
+			super.touchUp(x, y, pointer, button);
+
+			if (panning) {
+				return true;
+			}
+			
+			touchPos.set(x, y, 0);
+			camera.unproject(touchPos);
+			
+			// only make particles on touchup if they've been dragged
+			// tap gestures handle it otherwise
+			if (pointer == curPointer && protoParticle.dragged) {
+				curPointer = -1;
+				protoParticle.dragged = false;
+				protoParticle.vel(initPos.sub(touchPos).mul(sG));
+				protoParticle.position(touchPos);
+				addParticle();
+			}
+			
+			return true;
+		}
+		
+		@Override
+		public boolean touchDragged(float x, float y, int pointer) {
+			super.touchDragged(x, y, pointer);
+			
+			touchPos.set(x, y, 0);
+			camera.unproject(touchPos);
+			
+			if (pointer == curPointer) {
+				protoParticle.dragged = true;
+				protoParticle.position(touchPos);
+			}
+			
+			return true;
+		}
+	}
+	
 	class CameraController implements GestureListener {
 		float initialScale = 1;
 		float px, py;
-
-		public boolean touchDown(float x, float y, int pointer, int button) {
-			initialScale = camera.zoom;
-			return false;
-		}
-
-		private Particle getTouchedParticle(float x, float y) {
-			Circle tapCircle = new Circle();
-			for (Particle p : particles) {
-				// check a slightly bigger area to allow for finger inaccuracy
-				tapCircle.set(p.x, p.y, p.radius * 1.4f * camera.zoom);
-				if (tapCircle.contains(x, y)) {
-					return p;
-				}
-			}
-			return null;
-		}
-
+		
 		private void singleTap(float tapX, float tapY) {
 			if (touchBottomBar(tapX, tapY))
 				return;
@@ -91,6 +151,14 @@ public class Universe extends Actor {
 			addParticle();
 		}
 
+		@Override
+		public boolean touchDown(float x, float y, int pointer, int button) {
+			initialScale = camera.zoom;
+			
+			return false;
+		}
+		
+		// FIXME: some funky stuff is happening here that shows up when double-tapping
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
 			touchPos.set(x, y, 0);
@@ -161,6 +229,11 @@ public class Universe extends Actor {
 
 			px = (initialFirstPointer.x + initialSecondPointer.x) / 2;
 			py = (initialFirstPointer.y + initialSecondPointer.y) / 2;
+			
+			// this kills any accidental protoParticle creation
+			curPointer = -1;
+			protoParticle.dragged = false;
+			
 			return false;
 		}
 
@@ -180,12 +253,13 @@ public class Universe extends Actor {
 		initPos = new Vector3();
 		ctouchPos = new Vector3();
 		cinitPos = new Vector3();
-
+		curPointer = -1;
+		
 		protoParticle = (new Particle()).radius(minRadius);
 		camera = new OrthographicCamera();
 
 		controller = new CameraController();
-		gestureDetector = new GestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
+		gestureDetector = new UniverseGestureDetector(20, 0.5f, 0.5f, 0.15f, controller);
 		bottomBar = new Rectangle();
 
 		settings = new Settings();
@@ -218,8 +292,6 @@ public class Universe extends Actor {
 
 	@Override
 	public void act(float delta) {
-		manageInput();
-
 		if (!settings.get(Setting.PAUSED)) {
 			updateParticles();
 		}
@@ -271,47 +343,22 @@ public class Universe extends Actor {
 		batch.begin();
 	}
 
-	public void manageInput() {
-		if (panning || inMenu)
-			return;
-
-		if (Gdx.input.isTouched(0) && !Gdx.input.isTouched(1)
-				&& !Gdx.input.justTouched() && // only one finger is touching
-				!touchBottomBar(Gdx.input.getX(0), Gdx.input.getY(0))) {
-
-			touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
-			ctouchPos.set(touchPos);
-
-			// I have no idea what this was for
-			// if (null == hit(touchPos.x, touchPos.y, false)) {
-			// addedParticle = true;
-			// protoParticle.dragged = false;
-			// return;
-			// }
-
-			camera.unproject(touchPos);
-			addedParticle = false;
-
-			if (!protoParticle.dragged) {
-				protoParticle.stop();
-				protoParticle.dragged = true;
-				initPos.set(touchPos);
-				cinitPos.set(ctouchPos);
-			}
-
-			protoParticle.position(touchPos);
-		} else if (!addedParticle) {
-			protoParticle.dragged = false;
-			protoParticle.vel(initPos.sub(touchPos).mul(sG));
-			protoParticle.position(touchPos);
-			addParticle();
-		}
-	}
-
 	private boolean touchBottomBar(float x, float y) {
 		return bottomBar.contains(x, Gdx.graphics.getHeight() - y);
 	}
-
+	
+	private Particle getTouchedParticle(float x, float y) {
+		Circle tapCircle = new Circle();
+		for (Particle p : particles) {
+			// check a slightly bigger area to allow for finger inaccuracy
+			tapCircle.set(p.x, p.y, p.radius * 1.4f * camera.zoom);
+			if (tapCircle.contains(x, y)) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
 	private void updateParticles() {
 		Iterator<Particle> it;
 		for (int i = 0; i < particles.size; i++) {
