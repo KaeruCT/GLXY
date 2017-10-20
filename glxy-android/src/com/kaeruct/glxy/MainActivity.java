@@ -1,13 +1,5 @@
 package com.kaeruct.glxy;
 
-import android.annotation.TargetApi;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.view.WindowManager;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
@@ -20,29 +12,31 @@ public class MainActivity extends AndroidApplication {
         attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
         getWindow().setAttributes(attrs);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        
+
         if (Build.VERSION.SDK_INT >= 11) {
-        	resetStatusBar();
+            resetStatusBar();
         }
-        
+
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = true;
-        
+
         initialize(new GlxyGame(), cfg);
     }
-    
+
     @TargetApi(11)
-    private void resetStatusBar()
-    {
-    	getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);   
-	    getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-	        @Override
-	        public void onSystemUiVisibilityChange(int visibility) {
-	            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-	        }
-	    });
+    private void resetStatusBar() {
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(
+                new View.OnSystemUiVisibilityChangeListener() {
+                    @Override
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        getWindow().getDecorView().setSystemUiVisibility(
+                                View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                    }
+                });
     }
-    
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

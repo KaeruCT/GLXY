@@ -10,66 +10,72 @@ import com.badlogic.gdx.utils.ArrayMap;
 import com.kaeruct.glxy.screen.Screen;
 
 public class GlxyGame implements ApplicationListener {
-	private Screen screen;
-	protected ArrayMap<String, Screen> screens;
+    private Screen screen;
+    protected ArrayMap<String, Screen> screens;
 
-	@Override
-	public void create() {
-		Dialog.fadeDuration = 0.01f;
-		Gdx.input.setCatchMenuKey(true);
-		Gdx.input.setCatchBackKey(true);
+    @Override
+    public void create() {
+        Dialog.fadeDuration = 0.01f;
+        Gdx.input.setCatchMenuKey(true);
+        Gdx.input.setCatchBackKey(true);
         screens = new ArrayMap<String, Screen>();
         setScreen("MainMenuScreen");
-	}
+    }
 
-	public void setScreen(String name) {
-		Screen newScreen = null;
-		name = "com.kaeruct.glxy.screen." + name;  
-		if (screen != null) screen.hide();
-		
-		if (!screens.containsKey(name)) {
-			try {
-				Class<?> screenClass =  Class.forName(name);   
-	            Constructor<?> constructor = screenClass.getConstructor(GlxyGame.class);      
-				newScreen = (Screen) constructor.newInstance(this);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}  
-            screens.put(name, newScreen); 
-		} else {
-			newScreen = screens.get(name);
-		}
-		screen = newScreen;
-		screen.show();
-	}
+    public void setScreen(String name) {
+        Screen newScreen = null;
+        name = "com.kaeruct.glxy.screen." + name;
+        if (screen != null)
+            screen.hide();
 
-	@Override
-	public void dispose() {
-		if (screen != null) screen.dispose();
-	}
+        if (!screens.containsKey(name)) {
+            try {
+                Class<?> screenClass = Class.forName(name);
+                Constructor<?> constructor = screenClass
+                        .getConstructor(GlxyGame.class);
+                newScreen = (Screen) constructor.newInstance(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            screens.put(name, newScreen);
+        } else {
+            newScreen = screens.get(name);
+        }
+        screen = newScreen;
+        screen.show();
+    }
 
-	@Override
-	public void render() {		
-		Gdx.gl.glClearColor(0, 0, 0, 1);  
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);  
-		if (screen != null) {
-			screen.render(Gdx.graphics.getDeltaTime());
-		}
-	}
+    @Override
+    public void dispose() {
+        if (screen != null)
+            screen.dispose();
+    }
 
-	@Override
-	public void resize(int width, int height) {
-		if (screen != null) screen.resize(width, height);
-	}
- 
-	@Override
-	public void pause() {
-		if (screen != null) screen.pause();  
-	}
+    @Override
+    public void render() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+        if (screen != null) {
+            screen.render(Gdx.graphics.getDeltaTime());
+        }
+    }
 
-	@Override
-	public void resume() {
-		if (screen != null) screen.resume();
-	}
+    @Override
+    public void resize(int width, int height) {
+        if (screen != null)
+            screen.resize(width, height);
+    }
+
+    @Override
+    public void pause() {
+        if (screen != null)
+            screen.pause();
+    }
+
+    @Override
+    public void resume() {
+        if (screen != null)
+            screen.resume();
+    }
 
 }
