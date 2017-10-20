@@ -33,7 +33,7 @@ public class MainMenuScreen extends MenuScreen {
         add(t).expandY();
 
         Label cpright = new Label(
-                "Copyright CHEKAE 2013 - All rights reserved", skin);
+                "Copyright CHEKAE 2013 - 2017 - All rights reserved", skin);
         cpright.setAlignment(Align.center);
         cpright.setColor(1f, 1f, .8f, 1f);
         add(cpright).pad(10);
