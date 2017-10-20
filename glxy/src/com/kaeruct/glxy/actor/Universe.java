@@ -328,7 +328,7 @@ public class Universe extends Actor {
 				float dy = p2.y - p.y;
 				float d = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 				if (d == 0)
-					d = 1;
+					d = (float) 0.001;
 
 				if (p.collidesWith(p2)) {
 					if (settings.get(Setting.COLLISION)) {
