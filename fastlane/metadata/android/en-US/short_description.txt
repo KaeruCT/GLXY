@@ -1,0 +1,1 @@
+A simplified gravity simulator for Android, built with libgdx.
