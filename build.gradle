@@ -10,8 +10,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.4'
-        
-
     }
 }
 
@@ -34,8 +32,6 @@ allprojects {
         mavenCentral()
         google()
         gradlePluginPortal()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://versionoss.sonatype.org/content/repositories/releases/" }
     }
 }
 
