@@ -97,7 +97,7 @@ public class Universe extends Actor {
             touchPos.set(x, y, 0);
             camera.unproject(touchPos);
 
-            if (count == 1) { // single tap
+            if (count == 1 && Gdx.input.isButtonJustPressed(1)) { // single tap
                 if (followedParticle == null
                         || getTouchedParticle(touchPos.x, touchPos.y) == null) {
                     // single tap that wasn't either on another particle or the
