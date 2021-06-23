@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.input.GestureDetector;
@@ -23,6 +22,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.kaeruct.glxy.data.ImageCache;
 import com.kaeruct.glxy.model.Particle;
 import com.kaeruct.glxy.model.Settings;
@@ -56,6 +56,7 @@ public class Universe extends Actor {
     private Texture texture;
     private Texture bg;
     private Matrix4 m4;
+    private long start = TimeUtils.millis();
 
     class CameraController implements GestureListener {
         float initialScale = 1;
@@ -83,11 +84,10 @@ public class Universe extends Actor {
                 return;
 
             touchPos.set(tapX, tapY, 0);
-            initPos.set(0, 0, 0); // just to avoid instantiating a new vector
             camera.unproject(touchPos);
 
             protoParticle.dragged = false;
-            protoParticle.vel(initPos);
+            protoParticle.vel(new Vector3(0, 0, 0));
             protoParticle.position(touchPos);
             addParticle();
         }
@@ -97,12 +97,13 @@ public class Universe extends Actor {
             touchPos.set(x, y, 0);
             camera.unproject(touchPos);
 
-            if (count == 1 && Gdx.input.isButtonJustPressed(1)) { // single tap
+            if (count == 1) { // single tap
                 if (followedParticle == null
                         || getTouchedParticle(touchPos.x, touchPos.y) == null) {
                     // single tap that wasn't either on another particle or the
                     // one already being followed
                     singleTap(x, y);
+
                     return true;
                 }
             } else if (count >= 2) { // multiple taps
@@ -115,6 +116,7 @@ public class Universe extends Actor {
                     followedParticle = p;
                 }
             }
+
             return true;
         }
 
@@ -265,9 +267,6 @@ public class Universe extends Actor {
         if (!panning && protoParticle.dragged) {
             // draw "slingshot" line
 
-            // TODO: i think stage.setViewport broke this
-            // i can't get consistent placement on different screen sizes
-
              sr.begin(ShapeType.Line);
              sr.setColor(Color.LIGHT_GRAY);
              float yoff = getTop();
@@ -312,9 +311,12 @@ public class Universe extends Actor {
 
             protoParticle.position(touchPos);
         } else if (!addedParticle) {
-            protoParticle.dragged = false;
-            protoParticle.vel(initPos.sub(touchPos).scl(sG));
-            protoParticle.position(touchPos);
+            if (protoParticle.dragged) {
+                protoParticle.dragged = false;
+                Vector3 vel = initPos.sub(touchPos).scl(sG);
+                protoParticle.vel(vel);
+                protoParticle.position(touchPos);
+            }
             addParticle();
         }
     }
@@ -392,11 +394,12 @@ public class Universe extends Actor {
 
     private void renderParticles(Batch batch) {
         if (followedParticle != null && !followedParticle.dead) {
+            // draw red circle around followed particle
             batch.setColor(0.9f, 0.2f, 0.2f, 1);
             batch.draw(texture, followedParticle.x - followedParticle.radius
-                    * 1.05f, followedParticle.y - followedParticle.radius
-                    * 1.05f, followedParticle.radius * 2.1f,
-                    followedParticle.radius * 2.1f);
+                    * 1.6f, followedParticle.y - followedParticle.radius
+                    * 1.6f, followedParticle.radius * 1.6f,
+                    followedParticle.radius * 1.6f);
         }
 
         for (Particle p : particles) {
@@ -418,9 +421,18 @@ public class Universe extends Actor {
     }
 
     private void addParticle() {
+        long diff = TimeUtils.timeSinceMillis(start);
+        boolean skipParticleAdd = diff < 600;
+
+        if (skipParticleAdd) return; // avoid adding too fast
+        if (Gdx.input.isTouched(0)) return; // do not add if finger is still down
+
         Particle p = new Particle(protoParticle);
         particles.add(p);
         addedParticle = true;
+        start = TimeUtils.millis();
+
+        protoParticle.vel(new Vector3(0, 0, 0)); // reset protoParticle vel
 
         fire(new ChangeEvent());
     }
