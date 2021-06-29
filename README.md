@@ -29,5 +29,11 @@ You can build it using gradle or Android Studio.
 - Reset particles: Removes all the particles from the field.
 
 # Screenshots
-![1.png](http://kaeruct.github.io/galleries/glxy-android/1.png)
-![2.png](http://kaeruct.github.io/galleries/glxy-android/1.png)
+<img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="400" /> <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="400" />
+
+<img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="400" /> <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="400" />
+
+# Donate
+
+[![Donate using Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/KaeruCT/donate)
+
