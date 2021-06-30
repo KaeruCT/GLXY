@@ -11,17 +11,27 @@ You can build it using gradle or Android Studio.
 # Controls
 
 ## Touch gestures supported:
-- Single tap: Create a new particle.
-- Double tap: Put camera focus on a particle.
+
+- Single tap:
+
+  If panning is enabled, follow the tapped particle.
+  
+  Otherwise, create a new particle.
+  
 - Pinch: Zoom the view.
-- Pan: If panning is enabled, it will pan the view.
-       Otherwise, it will create a particle with momentum.
+
+- Panning / Dragging:
+  If panning is enabled, it will pan the view.
+  
+  Otherwise, it will create a particle with momentum.
 
 ## Option bar:
+
 - Small, Medium, Large buttons: Choose a particle size.
-- Pan button: Toggle pan/slingshotting particles.
+- Pan / Follow button: Toggle between panning/following or sling-shotting particles.
 
 ## Settings menu (cog icon):
+
 - Pause: Toggle pause.
 - Particle trails: Show / don't show.
 - Collision mode: Bounce / merge particles.
@@ -29,6 +39,7 @@ You can build it using gradle or Android Studio.
 - Reset particles: Removes all the particles from the field.
 
 # Screenshots
+
 <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="400" /> <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="400" />
 
 <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="400" /> <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="400" />

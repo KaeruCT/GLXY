@@ -2,15 +2,27 @@ Controls
 
 Touch gestures supported:
 
-    Single tap: Create a new particle.
+    Single tap:
+
+        If panning is enabled, follow the tapped particle.
+
+        Otherwise, create a new particle.
+
     Double tap: Put camera focus on a particle.
+
     Pinch: Zoom the view.
-    Pan: If panning is enabled, it will pan the view. Otherwise, it will create a particle with momentum.
+
+    Panning / Dragging:
+
+        If panning is enabled, it will pan the view.
+
+        Otherwise, it will create a particle with momentum.
 
 Option bar:
 
     Small, Medium, Large buttons: Choose a particle size.
-    Pan button: Toggle pan/slingshotting particles.
+
+    Pan / Follow button: Toggle between panning/following or sling-shotting particles.
 
 Settings menu (cog icon):
 

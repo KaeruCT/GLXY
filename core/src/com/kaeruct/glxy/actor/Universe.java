@@ -57,6 +57,8 @@ public class Universe extends Actor {
     private Texture bg;
     private Matrix4 m4;
     private long start = TimeUtils.millis();
+    private int w;
+    private int h;
 
     class CameraController implements GestureListener {
         float initialScale = 1;
@@ -71,7 +73,7 @@ public class Universe extends Actor {
             Circle tapCircle = new Circle();
             for (Particle p : particles) {
                 // check a slightly bigger area to allow for finger inaccuracy
-                tapCircle.set(p.x, p.y, p.radius * 1.4f * camera.zoom);
+                tapCircle.set(p.x, p.y, p.radius * 1.7f);
                 if (tapCircle.contains(x, y)) {
                     return p;
                 }
@@ -97,17 +99,9 @@ public class Universe extends Actor {
             touchPos.set(x, y, 0);
             camera.unproject(touchPos);
 
-            if (count == 1) { // single tap
-                if (followedParticle == null
-                        || getTouchedParticle(touchPos.x, touchPos.y) == null) {
-                    // single tap that wasn't either on another particle or the
-                    // one already being followed
-                    singleTap(x, y);
+            Particle p = getTouchedParticle(touchPos.x, touchPos.y);
 
-                    return true;
-                }
-            } else if (count >= 2) { // multiple taps
-                Particle p = getTouchedParticle(touchPos.x, touchPos.y);
+            if (panning) {
                 if (p == followedParticle) {
                     // stop following the followed particle if it was tapped
                     followedParticle = null;
@@ -115,6 +109,13 @@ public class Universe extends Actor {
                     // follow a new particle
                     followedParticle = p;
                 }
+                return true;
+            }
+
+            if (followedParticle == null || p == null) {
+                // single tap that wasn't either on another particle or the
+                // one already being followed
+                singleTap(x, y);
             }
 
             return true;
@@ -202,6 +203,8 @@ public class Universe extends Actor {
         bottomBar = new Rectangle();
 
         settings = new Settings();
+        w = Gdx.graphics.getWidth();
+        h = Gdx.graphics.getHeight();
 
         resize();
     }
@@ -211,8 +214,6 @@ public class Universe extends Actor {
     }
 
     public void resize() {
-        float w = Gdx.graphics.getWidth(), h = Gdx.graphics.getHeight();
-
         camera.setToOrtho(true, w, h);
         camera.position.set(w / 2f, h / 2f, 0);
 
@@ -222,7 +223,7 @@ public class Universe extends Actor {
         trailParticles = new TrailParticleManager(maxTrails, texture);
 
         bg = new Texture(Gdx.files.internal("data/bg.png"));
-        bg.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
+        bg.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
     }
 
     public void setParticleRadius(float r) {
@@ -248,10 +249,11 @@ public class Universe extends Actor {
         }
 
         // draw background
-        // batch.draw(bg, 0, getY(), getWidth(), getHeight());
+        batch.draw(bg, 0, 0, (int)Math.floor(camera.position.x/camera.zoom), (int)Math.floor(camera.position.y/camera.zoom), w, h);
 
         // draw particles and trails
         batch.setProjectionMatrix(camera.combined);
+
         renderParticles(batch);
         batch.end();
 
@@ -291,13 +293,6 @@ public class Universe extends Actor {
 
             touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
             ctouchPos.set(touchPos);
-
-            // I have no idea what this was for
-            // if (null == hit(touchPos.x, touchPos.y, false)) {
-            // addedParticle = true;
-            // protoParticle.dragged = false;
-            // return;
-            // }
 
             camera.unproject(touchPos);
             addedParticle = false;
@@ -394,12 +389,16 @@ public class Universe extends Actor {
 
     private void renderParticles(Batch batch) {
         if (followedParticle != null && !followedParticle.dead) {
+            float r = 10f;
             // draw red circle around followed particle
             batch.setColor(0.9f, 0.2f, 0.2f, 1);
-            batch.draw(texture, followedParticle.x - followedParticle.radius
-                    * 1.6f, followedParticle.y - followedParticle.radius
-                    * 1.6f, followedParticle.radius * 1.6f,
-                    followedParticle.radius * 1.6f);
+            batch.draw(
+                texture,
+                followedParticle.x - followedParticle.radius - r/2,
+                followedParticle.y - followedParticle.radius - r/2,
+                followedParticle.radius * 2 + r,
+                followedParticle.radius * 2 + r
+            );
         }
 
         for (Particle p : particles) {
@@ -422,7 +421,7 @@ public class Universe extends Actor {
 
     private void addParticle() {
         long diff = TimeUtils.timeSinceMillis(start);
-        boolean skipParticleAdd = diff < 600;
+        boolean skipParticleAdd = diff < 250;
 
         if (skipParticleAdd) return; // avoid adding too fast
         if (Gdx.input.isTouched(0)) return; // do not add if finger is still down

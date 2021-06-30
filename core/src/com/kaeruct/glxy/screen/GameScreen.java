@@ -85,8 +85,7 @@ public class GameScreen extends Screen {
         });
 
         final TextureRegion settingsImage = new TextureRegion(settingsTexture);
-        final ImageButton t4 = new ImageButton(new TextureRegionDrawable(
-                settingsImage));
+        final ImageButton t4 = new ImageButton(new TextureRegionDrawable(settingsImage));
         t4.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -98,7 +97,7 @@ public class GameScreen extends Screen {
             }
         });
 
-        final TextButton panButton = new BigTextButton("Pan", skin, "toggle");
+        final TextButton panButton = new BigTextButton("Pan/Follow", skin, "toggle");
         panButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -116,10 +115,10 @@ public class GameScreen extends Screen {
         table.add(universe).expand().fill().colspan(7).row();
 
         table.add(l2).pad(4, 4, 40, 4).fillX().expandX();
-        table.add(b1).left().pad(4, 0, 0, 140);
+        table.add(b1).left().pad(4, 100, 0, 140);
         table.add(b2).center().pad(4, 0, 0, 180);
         table.add(b3).right().pad(4, 0, 0, 200);
-        table.add(panButton).right().pad(4, 0, 0, 120).expandX();
+        table.add(panButton).right().pad(4, 0, 0, 200).expandX();
         table.add(t4).right().pad(4, 4, 50, 4);
 
         // this is horrible, but i am too stupid to make this work correctly

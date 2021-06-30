@@ -16,8 +16,4 @@ public class ImageCache {
     public static TextureRegion getTexture(String name) {
         return atlas.findRegion(name);
     }
-
-    public static TextureRegion getFrame(String name, int index) {
-        return atlas.findRegion(name, index);
-    }
 }

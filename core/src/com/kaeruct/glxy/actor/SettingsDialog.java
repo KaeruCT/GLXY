@@ -1,8 +1,10 @@
 package com.kaeruct.glxy.actor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -13,6 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.kaeruct.glxy.model.Settings.Setting;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 public class SettingsDialog extends Dialog {
     private final Universe universe;
@@ -121,7 +126,8 @@ public class SettingsDialog extends Dialog {
 
     @Override
     public Dialog show(Stage stage) {
-        super.show(stage);
+        show(stage, null);
+        setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
         this.isShowing = true;
         universe.inMenu = true;
         return this;
@@ -129,7 +135,7 @@ public class SettingsDialog extends Dialog {
 
     @Override
     public void hide() {
-        super.hide();
+        hide(null);
         this.isShowing = false;
         universe.inMenu = false;
     }
