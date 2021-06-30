@@ -20,8 +20,8 @@ android {
         applicationId "com.kaeruct.glxy"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 21
-        versionName "2.1"
+        versionCode 22
+        versionName "2.2"
     }
     buildTypes {
         release {
